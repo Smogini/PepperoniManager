@@ -1,0 +1,17 @@
+Gruppo:
+Password:
+
+Il proprietario di una pizzeria richiede che venga realizzato un Database che memorizzi i vari dati relativi ai propri dipendenti, ai turni di lavoro, al menù, ai fornitori e agli ordini ricevuti.
+
+Per ogni dipendente dovranno essere memorizzati il nome, il cognome, il codice fiscale, l'indirizzo, il numero di telefono e il ruolo che ricopre. I ruoli principali sono 3: fattorino, pizzaiolo, cassiere.
+I fattorini, nel loro turno, guideranno un mezzo, moto o macchina, messo a disposizione della pizzeria che potrà essere utilizzato solamente da un fattorino per volta. Inoltre è necessario effettuare la revisione dei mezzi, per legge, ogni 2 anni.
+
+Il menù dovrà contenere la lista delle pizze e degli ingredienti a disposizione. Per ogni pizza si vogliono memorizzare gli ingredienti, le taglie, i prezzi e il tipo di impasto.
+
+Per ogni fornitore si memorizzano il nome e cognome, il codice fiscale, il nome della compagnia di fornitura, i giorni e gli orari in cui fornisce i prodotti alla pizzeria.
+
+Gli ordini, invece, possono essere effettuati in 3 modalità: online, telefonicamente o presso il locale. Per ogni ordine si memorizzano un numero identificativo, la descrizione dell'ordine, il cognome del cliente e l'indirizzo (nel caso l'ordine venga effettuato online o telefonicamente). Inoltre, il sistema dovrà tenere traccia dello storico degli ordini effettuati.
+
+La pizzeria prevede anche una scheda sconti, ovvero dopo un certo numero di ordini effettuati è possibile applicare uno sconto sull'ordine successivo.
+
+Infine il sistema dovrà permettere di generare dei report sulle vendite e sui clienti abituali per monitorare le prestazioni dell'attività.
