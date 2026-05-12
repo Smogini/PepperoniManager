@@ -1,0 +1,131 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    transition: 0.4s;
+}
+
+body[data-mode="UTENTE"] {
+    background: #f4f4f4;
+}
+
+body[data-mode="DIPENDENTE"] {
+    background: #1e8449;
+}
+
+body[data-mode="AMMINISTRATORE"] {
+    background: #2c3e50;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-card {
+    width: 350px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.subtitle {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.mode-switch {
+    margin-bottom: 20px;
+}
+
+.mode-switch button {
+    margin: 3px;
+    padding: 8px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background: #eee;
+    transition: 0.2s;
+}
+
+.mode-switch button:hover {
+    background: #ddd;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form input {
+    width: 90%;
+    max-width: 280px;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.form input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52,152,219,0.4);
+}
+
+.form button {
+    width: 90%;
+    max-width: 280px;
+    padding: 12px;
+    margin-top: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.form button:hover {
+    background: #2980b9;
+}
+
+.error {
+    margin-top: 10px;
+    color: red;
+}
+
+.register-link {
+    margin-top: 20px;
+}
+
+.register-link p {
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.register-link a {
+    display: inline-block;
+    width: 90%;
+    max-width: 300px;
+    padding: 12px;
+    margin-top: 10px;
+    text-align: center;
+    text-decoration: none !important;
+    border-radius: 8px;
+    background: #3498db;
+    color: white !important;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: Arial, sans-serif;
+}
+
+.register-link a:hover {
+    background: #2980b9;
+}
