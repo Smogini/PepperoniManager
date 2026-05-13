@@ -16,13 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = $dbh->escapeString($_POST['nome']);
     $cognome = $dbh->escapeString($_POST['cognome']);
     $ruolo = $_POST['ruolo'] ?? '';
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT) ?? '';
 
-    if ($ruolo === '') {
-        $error = "Seleziona un ruolo";
+    if ($ruolo === '' || $password === '') {
+        $error = "Compila tutti i campi";
     } else {
-
         try {
-
             $stmt = $dbh->prepareQuery("
                 INSERT INTO PERSONA (nome, cognome)
                 VALUES (?, ?)
@@ -34,39 +33,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $id = $dbh->getLastInsertId();
 
             $stmt = $dbh->prepareQuery("
-                INSERT INTO DIPENDENTE (Id)
-                VALUES (?)
+                INSERT INTO DIPENDENTE (id, ruolo, password)
+                VALUES (?, ?, ?)
             ");
 
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-
-            if ($ruolo === "FATTORINO") {
-
-                $stmt = $dbh->prepareQuery("
-                    INSERT INTO FATTORINO (Id)
-                    VALUES (?)
-                ");
-
-            } elseif ($ruolo === "PIZZAIOLO") {
-
-                $stmt = $dbh->prepareQuery("
-                    INSERT INTO PIZZAIOLO (Id)
-                    VALUES (?)
-                ");
-
-            } elseif ($ruolo === "CASSIERE") {
-
-                $stmt = $dbh->prepareQuery("
-                    INSERT INTO CASSIERE (Id)
-                    VALUES (?)
-                ");
-            }
-
-            $stmt->bind_param("i", $id);
+            $stmt->bind_param("iss", $id, $ruolo, $password);
             $stmt->execute();
 
             $success = "Dipendente creato con successo!";
+
         } catch (Exception $e) {
             $error = "Errore creazione dipendente";
         }
@@ -103,6 +78,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <option value="PIZZAIOLO">Pizzaiolo</option>
                     <option value="CASSIERE">Cassiere</option>
                 </select>
+
+                <input type="password" name="password" placeholder="Password del profilo" required>
 
                 <button type="submit">Crea Dipendente</button>
                 <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>

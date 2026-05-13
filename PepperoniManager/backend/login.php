@@ -29,8 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['login'])) {
             if (password_verify($password, $user['password'])) {
                 $_SESSION['role'] = "UTENTE";
                 $_SESSION['id'] = $user['id'];
-                $id = $user['id'];
-                echo "id utente corrente: $id";
+                $_SESSION['username'] = $user['username'];
                 $roleFound = true;
             }
         }
@@ -38,18 +37,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['login'])) {
 
     if ($mode === "DIPENDENTE") {
         $res = $dbh->executeQuery("
-            SELECT p.* 
+            SELECT p.id, p.nome, d.ruolo, d.password
             FROM Persona p
             JOIN Dipendente d ON p.id = d.id
-            WHERE p.username='$username'
+            WHERE p.nome='$username'
         ");
 
         if ($res && $res->num_rows === 1) {
             $user = $res->fetch_assoc();
 
-            if ($password === $user['password']) {
+            if (password_verify($password, $user['password'])) {
                 $_SESSION['role'] = "DIPENDENTE";
                 $_SESSION['id'] = $user['id'];
+                $_SESSION['employ_role'] = $user['ruolo'];
+                $_SESSION['username'] = $user['nome'];
                 $roleFound = true;
             }
         }
@@ -107,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['login'])) {
 
                 <div class="register-link">
                     <p>Non hai un account?</p>
-                    <a href="operation/register.php">Registrati</a>
+                    <a href="operation/register_user.php">Registrati</a>
                 </div>
 
             </form>

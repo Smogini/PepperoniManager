@@ -50,46 +50,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!DOCTYPE html>
 <html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Nuovo Ingrediente</title>
+    <head>
+        <meta charset="UTF-8">
+        <title>Nuovo Ingrediente</title>
 
-    <link rel="stylesheet" href="/PepperoniManager/assets/css/insert.css">
-</head>
+        <link rel="stylesheet" href="/PepperoniManager/assets/css/insert.css">
+    </head>
 
-<body>
+    <body>
+        <div class="register-container">
 
-<div class="register-container">
+            <div class="register-card">
 
-    <div class="register-card">
+                <h1>🧄 Nuovo Ingrediente</h1>
+                <p class="subtitle">Aggiungi un ingrediente al menu</p>
 
-        <h1>🧄 Nuovo Ingrediente</h1>
-        <p class="subtitle">Aggiungi un ingrediente al menu</p>
+                <form method="POST" class="form">
 
-        <form method="POST" class="form">
+                    <input type="text" name="nome" placeholder="Nome ingrediente" required>
 
-            <input type="text" name="nome" placeholder="Nome ingrediente" required>
+                    <input type="number" step="0.01" name="prezzo" placeholder="Prezzo (€)" required>
 
-            <input type="number" step="0.01" name="prezzo" placeholder="Prezzo (€)" required>
+                    <input type="text" name="descrizione" placeholder="Descrizione (opzionale)">
 
-            <input type="text" name="descrizione" placeholder="Descrizione (opzionale)">
+                    <button type="submit">Inserisci Ingrediente</button>
+                    <a href="../../dashboard.php">Torna alla dashboard</a>
 
-            <button type="submit">Inserisci Ingrediente</button>
-            <a href="../../dashboard.php">Torna alla dashboard</a>
+                </form>
 
-        </form>
+                <?php if ($error): ?>
+                    <div class="error"><?php echo $error; ?></div>
+                <?php endif; ?>
 
-        <?php if ($error): ?>
-            <div class="error"><?php echo $error; ?></div>
-        <?php endif; ?>
+                <?php if ($success): ?>
+                    <div class="success"><?php echo $success; ?></div>
+                <?php endif; ?>
 
-        <?php if ($success): ?>
-            <div class="success"><?php echo $success; ?></div>
-        <?php endif; ?>
+            </div>
 
-    </div>
-
-</div>
-
-</body>
+        </div>
+    </body>
 </html>

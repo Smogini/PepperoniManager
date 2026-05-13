@@ -68,58 +68,58 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!DOCTYPE html>
 <html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Nuovo Veicolo</title>
+    <head>
+        <meta charset="UTF-8">
+        <title>Nuovo Veicolo</title>
 
-    <link rel="stylesheet" href="/PepperoniManager/assets/css/insert.css">
-</head>
+        <link rel="stylesheet" href="/PepperoniManager/assets/css/insert.css">
+    </head>
 
-<body>
+    <body>
 
-<div class="register-container">
+        <div class="register-container">
 
-    <div class="register-card">
+            <div class="register-card">
 
-        <h1>🚗 Nuovo Veicolo</h1>
-        <p class="subtitle">Inserisci un nuovo mezzo nel sistema</p>
+                <h1>🚗 Nuovo Veicolo</h1>
+                <p class="subtitle">Inserisci un nuovo mezzo nel sistema</p>
 
-        <form method="POST" class="form">
+                <form method="POST" class="form">
 
-            <select name="tipo_veicolo" required>
-                <option value="">-- Seleziona --</option>
-                <option value="Automobile">Automobile</option>
-                <option value="Motorino">Motorino</option>
-            </select>
+                    <select name="tipo_veicolo" required>
+                        <option value="">-- Seleziona --</option>
+                        <option value="Automobile">Automobile</option>
+                        <option value="Motorino">Motorino</option>
+                    </select>
 
-            <select name="stato_veicolo" required>
-                <option value="">-- Seleziona --</option>
-                <option value="Operativo">Operativo</option>
-                <option value="Guasto">Guasto</option>
-            </select>
+                    <select name="stato_veicolo" required>
+                        <option value="">-- Seleziona --</option>
+                        <option value="Operativo">Operativo</option>
+                        <option value="Guasto">Guasto</option>
+                    </select>
 
-            <h4>Revisione iniziale</h4>
+                    <h4>Revisione iniziale</h4>
 
-            <input type="number" step="0.01" min="0.00" name="prezzo" placeholder="Prezzo revisione (€)" required>
-            <input type="date" name="date" placeholder="Data di effettuazione" required>
-            <input type="text" name="note" placeholder="Note revisione">
-            
-            <button type="submit">Inserisci Veicolo</button>
-            <a href="../../dashboard.php">Torna alla dashboard</a>
+                    <input type="number" step="0.01" min="0.00" name="prezzo" placeholder="Prezzo revisione (€)" required>
+                    <input type="date" name="date" placeholder="Data di effettuazione" required>
+                    <input type="text" name="note" placeholder="Note revisione">
+                    
+                    <button type="submit">Inserisci Veicolo</button>
+                    <a href="../../dashboard.php">Torna alla dashboard</a>
 
-        </form>
+                </form>
 
-        <?php if ($error): ?>
-            <div class="error"><?php echo $error; ?></div>
-        <?php endif; ?>
+                <?php if ($error): ?>
+                    <div class="error"><?php echo $error; ?></div>
+                <?php endif; ?>
 
-        <?php if ($success): ?>
-            <div class="success"><?php echo $success; ?></div>
-        <?php endif; ?>
+                <?php if ($success): ?>
+                    <div class="success"><?php echo $success; ?></div>
+                <?php endif; ?>
 
-    </div>
+            </div>
 
-</div>
+        </div>
 
-</body>
+    </body>
 </html>

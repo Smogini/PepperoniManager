@@ -2,13 +2,16 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: #f4f4f4;
+    overflow-y: auto;
 }
 
 .register-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 0;
+    overflow-y: auto;
 }
 
 .register-card {
@@ -31,17 +34,7 @@ body {
     align-items: center;
 }
 
-.form select {
-    width: 90%;
-    max-width: 300px;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-align: center;
-    background: white;
-}
-
+.form select,
 .form input {
     width: 90%;
     max-width: 300px;
@@ -52,6 +45,7 @@ body {
     outline: none;
     transition: 0.2s;
     text-align: center;
+    background: white;
 }
 
 .form input:focus {
@@ -92,7 +86,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.a:hover {
+.form a:hover {
     background: #2980b9;
 }
 
@@ -131,59 +125,7 @@ h2 {
     text-align: center;
 }
 
-#searchIngredient {
-    width: 90%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
-
-.ingredient-grid {
-    width: 90%;
-    max-height: 250px;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background: #fafafa;
-}
-
-.ingredient-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 12px;
-    border-radius: 10px;
-    background: white;
-    cursor: pointer;
-    transition: 0.2s;
-    border: 2px solid transparent;
-    user-select: none;
-}
-
-.ingredient-card:hover {
-    transform: scale(1.03);
-    border-color: #3498db;
-}
-
-.ingredient-card input {
-    display: none;
-}
-
-.ingredient-card input:checked + span {
-    color: white;
-    background: #27ae60;
-    padding: 6px 10px;
-    border-radius: 6px;
-}
-
-#ingredientSearch {
+#js-search {
     width: 90%;
     padding: 12px;
     margin-bottom: 10px;
@@ -191,7 +133,7 @@ h2 {
     border: 1px solid #ccc;
 }
 
-#ingredientList {
+#js-list {
     width: 90%;
     max-height: 220px;
     overflow-y: auto;
@@ -201,9 +143,10 @@ h2 {
     padding: 10px;
 }
 
-.ingredient-row {
+.js-item {
     display: flex;
     align-items: center;
+    text-align: left;
     gap: 10px;
     padding: 8px;
     border-radius: 6px;
@@ -211,16 +154,20 @@ h2 {
     transition: 0.2s;
 }
 
-.ingredient-row:hover {
+.js-item:hover {
     background: #f0f0f0;
 }
 
-.ingredient-row input {
+.js-item input[type="checkbox"] {
     width: 18px;
     height: 18px;
 }
 
-#selectedIngredients {
+.js-item span {
+    flex: 1;
+}
+
+#js-selected {
     width: 90%;
     display: flex;
     flex-wrap: wrap;

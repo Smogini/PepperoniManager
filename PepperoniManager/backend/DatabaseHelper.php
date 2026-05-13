@@ -3,7 +3,7 @@
 class DatabaseHelper {
     private $conn;
 
-    public function __construct($db_name = "pepperoni_manager_db") {
+    public function __construct($db_name = "pepperoni_db") {
         $this->conn = new mysqli("localhost", "root", "", $db_name);
 
         if ($this->conn->connect_error) {
@@ -17,16 +17,6 @@ class DatabaseHelper {
         }
     }
 
-    public function prepareExecuteQuery($query, ...$params) {
-        $stmt = $this->conn->prepare($query);
-
-        if (!$stmt->execute()) {
-            exit("Error creating table");
-        }
-
-        return $stmt;
-    }
-
     public function executeQuery($query) {
         $result = $this->conn->query($query);
 
@@ -35,12 +25,6 @@ class DatabaseHelper {
         }
 
         return $result;
-    }
-
-    public function selectDB($db_name) {
-        if ($db_name != "") {
-            $this->conn->select_db($db_name);
-        }
     }
 
     public function escapeString($string) {

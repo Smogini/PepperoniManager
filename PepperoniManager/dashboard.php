@@ -7,6 +7,14 @@ if (!isset($_SESSION['role'])) {
 }
 
 $role = $_SESSION['role'];
+$employ_role = "";
+if (isset($_SESSION['employ_role'])) {
+    $employ_role = $_SESSION['employ_role'];
+}
+$username = "";
+if (isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,43 +22,46 @@ $role = $_SESSION['role'];
     <head>
         <meta charset="UTF-8">
         <title>Dashboard</title>
-
+        
         <link rel="stylesheet" href="/PepperoniManager/assets/css/dashboard.css">
     </head>
 
     <body class="<?php echo strtolower($role); ?>">
+        <div class="box">
+            <h1>Benvenuto/a <?= $username ?></h1>
 
-    <div class="box">
+            <?php if ($role === "UTENTE"): ?>
 
-        <h1>Pepperoni Manager</h1>
+                <h2>Area Utente</h2>
 
-        <?php if ($role === "UTENTE"): ?>
+                <a href="backend/operation/insert_order.php">🍕 Inserisci ordine</a>
+                <a href="backend/operation/view_orders.php">📋 Storico ordini</a>
 
-            <h2>Area Utente</h2>
+            <?php elseif ($role === "DIPENDENTE"): ?>
 
-            <a href="backend/operation/insert_order.php">🍕 Inserisci ordine</a>
+                <h2>Area Dipendente (<?= $employ_role ?>)</h2>
 
-            <a href="backend/operation/view_orders.php">📋 Storico ordini</a>
+                <?php if($employ_role === 'fattorino'): ?>
+                    <a href="backend/operation/view_delivery.php">Visualizza le consegne</a>
+                <?php else: ?>
+                    <a href="backend/operation/accept_order.php">Accetta gli ordini</a>
+                <?php endif; ?>
+                <a href="backend/operation/view_shift.php">Visualizza i turni di lavoro</a>
 
-        <?php elseif ($role === "DIPENDENTE"): ?>
+            <?php elseif ($role === "AMMINISTRATORE"): ?>
 
-            <h2>Area Dipendente</h2>
+                <h2>Area Amministratore</h2>
 
-        <?php elseif ($role === "AMMINISTRATORE"): ?>
+                <a href="backend/operation/register_employee.php">Inserisci un nuovo dipendente</a>
+                <a href="backend/operation/insert_veichle.php">Inserisci un nuovo veicolo</a>
+                <a href="backend/operation/insert_pizza.php">Inserisci una pizza</a>
+                <a href="backend/operation/insert_ingredient.php">Inserisci un ingrediente</a>
+                <a href="backend/operation/insert_shift.php">Inserisci un turno</a>
 
-            <h2>Area Amministratore</h2>
+            <?php endif; ?>
 
-            <a href="backend/operation/register_employee.php">Inserisci un nuovo dipendente</a>
-            <a href="backend/operation/insert_veichle.php">Inserisci un nuovo veicolo</a>
-            <a href="backend/operation/insert_pizza.php">Inserisci una pizza</a>
-            <a href="backend/operation/insert_ingredient.php">Inserisci un ingrediente</a>
-
-        <?php endif; ?>
-
-        <br><br>
-        <a href="backend/login.php?logout=1">Logout</a>
-
-    </div>
-
+            <br><br>
+            <a href="backend/login.php?logout=1">Logout</a>
+        </div>
     </body>
 </html>

@@ -1,0 +1,249 @@
+-- =========================================
+-- CREAZIONE DATABASE
+-- =========================================
+
+CREATE DATABASE pepperoni_db;
+USE pepperoni_db;
+
+-- =========================================
+-- PERSONA
+-- =========================================
+
+CREATE TABLE PERSONA (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cognome VARCHAR(100) NOT NULL
+);
+
+-- =========================================
+-- UTENTE
+-- =========================================
+
+CREATE TABLE UTENTE (
+    id INT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    stato VARCHAR(50) NOT NULL,
+
+    FOREIGN KEY (id)
+        REFERENCES PERSONA(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- DIPENDENTE
+-- =========================================
+
+CREATE TABLE DIPENDENTE (
+    id INT PRIMARY KEY,
+    ruolo ENUM('fattorino','pizzaiolo','cassiere') NOT NULL,
+    password VARCHAR(255) NOT NULL,
+
+    FOREIGN KEY (id)
+        REFERENCES PERSONA(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- ORDINE
+-- =========================================
+
+CREATE TABLE ORDINE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    utente_id INT NOT NULL,
+
+    data DATETIME NOT NULL,
+    stato VARCHAR(50) NOT NULL,
+    tipo_acquisizione VARCHAR(50) NOT NULL,
+
+    FOREIGN KEY (utente_id)
+        REFERENCES UTENTE(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- RECENSIONE
+-- =========================================
+
+CREATE TABLE RECENSIONE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    utente_id INT NOT NULL,
+    ordine_id INT NOT NULL UNIQUE,
+
+    voto INT NOT NULL,
+    commento TEXT,
+    stato VARCHAR(50) NOT NULL,
+
+    CHECK (voto >= 1 AND voto <= 5),
+
+    FOREIGN KEY (utente_id)
+        REFERENCES UTENTE(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (ordine_id)
+        REFERENCES ORDINE(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- CONSEGNA
+-- =========================================
+
+CREATE TABLE CONSEGNA (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    ordine_id INT NOT NULL UNIQUE,
+    fattorino_id INT,
+
+    via VARCHAR(255) NOT NULL,
+    n_civico VARCHAR(20) NOT NULL,
+    citta VARCHAR(100) NOT NULL,
+    cap VARCHAR(10) NOT NULL,
+
+    stato VARCHAR(50) NOT NULL,
+
+    CHECK (stato IN ('IN_ATTESA','ACCETTATA','CONSEGNATA'))
+
+    FOREIGN KEY (ordine_id)
+        REFERENCES ORDINE(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (fattorino_id)
+        REFERENCES DIPENDENTE(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- PIZZA
+-- =========================================
+
+CREATE TABLE PIZZA (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    nome VARCHAR(100) NOT NULL,
+    descrizione TEXT,
+    prezzo DECIMAL(6,2) NOT NULL,
+    disponibilita BOOLEAN NOT NULL,
+
+    dimensione ENUM('S', 'M', 'L') NOT NULL,
+    impasto ENUM('classico', 'integrale', 'senza_glutine') NOT NULL
+);
+
+-- =========================================
+-- INGREDIENTE
+-- =========================================
+
+CREATE TABLE INGREDIENTE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    nome VARCHAR(100) NOT NULL,
+    prezzo DECIMAL(6,2) NOT NULL,
+    descrizione TEXT
+);
+
+-- =========================================
+-- RICETTA (PIZZA - INGREDIENTE)
+-- =========================================
+
+CREATE TABLE RICETTA (
+    pizza_id INT NOT NULL,
+    ingrediente_id INT NOT NULL,
+
+    PRIMARY KEY (pizza_id, ingrediente_id),
+
+    FOREIGN KEY (pizza_id)
+        REFERENCES PIZZA(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (ingrediente_id)
+        REFERENCES INGREDIENTE(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================
+-- DETTAGLIO ORDINE
+-- =========================================
+
+CREATE TABLE DETTAGLIO_ORDINE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    ordine_id INT NOT NULL,
+    pizza_id INT NOT NULL,
+
+    prezzo_finale DECIMAL(6,2) NOT NULL,
+    note TEXT,
+
+    FOREIGN KEY (ordine_id)
+        REFERENCES ORDINE(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (pizza_id)
+        REFERENCES PIZZA(id)
+);
+
+-- =========================================
+-- TURNO
+-- =========================================
+
+CREATE TABLE TURNO (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    data DATE NOT NULL,
+    ora_inizio TIME NOT NULL,
+    ora_fine TIME NOT NULL
+);
+
+-- =========================================
+-- VEICOLO
+-- =========================================
+
+CREATE TABLE VEICOLO (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    tipo VARCHAR(100) NOT NULL,
+    stato_operativo VARCHAR(50) NOT NULL
+);
+
+-- =========================================
+-- ASSEGNAZIONE TURNO
+-- =========================================
+
+CREATE TABLE ASSEGNAZIONE_TURNO (
+    dipendente_id INT NOT NULL,
+    turno_id INT NOT NULL,
+    veicolo_id INT NULL,
+
+    PRIMARY KEY (dipendente_id, turno_id),
+
+    FOREIGN KEY (dipendente_id)
+        REFERENCES DIPENDENTE(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (turno_id)
+        REFERENCES TURNO(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (veicolo_id)
+        REFERENCES VEICOLO(id)
+        ON DELETE SET NULL
+);
+
+-- =========================================
+-- REVISIONE
+-- =========================================
+
+CREATE TABLE REVISIONE (
+    veicolo_id INT NOT NULL,
+    data DATE NOT NULL,
+
+    prezzo DECIMAL(6,2) NOT NULL,
+    note TEXT,
+
+    PRIMARY KEY (veicolo_id, data),
+
+    FOREIGN KEY (veicolo_id)
+        REFERENCES VEICOLO(id)
+        ON DELETE CASCADE
+);
