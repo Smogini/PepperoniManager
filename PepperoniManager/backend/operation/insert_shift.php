@@ -103,7 +103,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <body>
         <div class="register-container">
             <div class="register-card">
-
                 <h1>📅 Nuovo Turno</h1>
                 <p class="subtitle">Inserisci un turno di lavoro</p>
 
@@ -117,23 +116,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <input type="text" class="js-search" placeholder="Cerca dipendente...">
 
                     <div class="js-list">
-
                         <?php while($dipendente = $dipendenti->fetch_assoc()): ?>
-
                             <div class="js-item">
-
                                 <input type="checkbox"
                                     name="dipendenti[]"
                                     value="<?php echo $dipendente['id']; ?>"
                                     class="js-checkbox">
-
                                 <span>
                                     <?= $dipendente['nome'] . " " . $dipendente['cognome']; ?>
                                     (<?= $dipendente['ruolo']; ?>)
                                 </span>
-
                                 <?php if ($dipendente['ruolo'] === 'fattorino'): ?>
-
                                     <select name="veicolo_<?php echo $dipendente['id']; ?>">
                                         <option value="">-- Nessun veicolo --</option>
 
@@ -141,11 +134,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                         $veicoli->data_seek(0);
                                         while($veicolo = $veicoli->fetch_assoc()):
                                         ?>
-
                                             <option value="<?php echo $veicolo['id']; ?>">
                                                 <?= $veicolo['id'] . " - " . $veicolo['tipo']; ?>
                                             </option>
-
                                         <?php endwhile; ?>
                                     </select>
                                 <?php endif; ?>

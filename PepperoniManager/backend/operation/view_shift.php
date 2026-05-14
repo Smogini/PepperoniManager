@@ -22,10 +22,10 @@ $query = "
     FROM ASSEGNAZIONE_TURNO AT
 
     INNER JOIN TURNO T
-        ON AT.turno_id = T.id
+    ON AT.turno_id = T.id
 
     LEFT JOIN VEICOLO V
-        ON AT.veicolo_id = V.id
+    ON AT.veicolo_id = V.id
 
     WHERE AT.dipendente_id = ?
 
@@ -67,15 +67,9 @@ $result = $stmt->get_result();
 
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td>
-                            <?php echo $row['data']; ?>
-                        </td>
-                        <td>
-                            <?php echo substr($row['ora_inizio'], 0, 5); ?>
-                        </td>
-                        <td>
-                            <?php echo substr($row['ora_fine'], 0, 5); ?>
-                        </td>
+                        <td><?php echo $row['data']; ?></td>
+                        <td><?php echo substr($row['ora_inizio'], 0, 5); ?></td>
+                        <td><?php echo substr($row['ora_fine'], 0, 5); ?></td>
                         <td>
                             <?php if ($row['veicolo_id'] !== null): ?>
                                 🚗 <?php echo $row['veicolo']; ?>
@@ -92,10 +86,7 @@ $result = $stmt->get_result();
         <br>
 
         <form class="form">
-            <a href="/PepperoniManager/dashboard.php">
-                Torna alla dashboard
-            </a>
+            <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>
         </form>
-
     </body>
 </html>

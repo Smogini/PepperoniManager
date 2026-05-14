@@ -12,7 +12,6 @@ $error = null;
 $success = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $tipo = $dbh->escapeString($_POST['tipo_veicolo']);
     $stato = $dbh->escapeString($_POST['stato_veicolo']);
 
@@ -40,14 +39,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $stmt = $dbh->prepareQuery("
                 INSERT INTO REVISIONE (
-                    Veicolo_Id,
+                    veicolo_id,
                     data,
                     prezzo,
                     note
                 )
                 VALUES (?, ?, ?, ?)
             ");
-
             $stmt->bind_param(
                 "isds",
                 $idVeicolo,
@@ -55,7 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $prezzo,
                 $note
             );
-
             $stmt->execute();
         }
 
@@ -76,16 +73,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </head>
 
     <body>
-
         <div class="register-container">
-
             <div class="register-card">
-
                 <h1>🚗 Nuovo Veicolo</h1>
                 <p class="subtitle">Inserisci un nuovo mezzo nel sistema</p>
 
                 <form method="POST" class="form">
-
                     <select name="tipo_veicolo" required>
                         <option value="">-- Seleziona --</option>
                         <option value="Automobile">Automobile</option>
@@ -94,8 +87,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     <select name="stato_veicolo" required>
                         <option value="">-- Seleziona --</option>
-                        <option value="Operativo">Operativo</option>
-                        <option value="Guasto">Guasto</option>
+                        <option value="OPERATIVO">Operativo</option>
+                        <option value="MANUTENZIONE">Manutenzione</option>
+                        <option value="NON_DISPONIBILE">Non disponibile</option>
                     </select>
 
                     <h4>Revisione iniziale</h4>
@@ -106,7 +100,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     
                     <button type="submit">Inserisci Veicolo</button>
                     <a href="../../dashboard.php">Torna alla dashboard</a>
-
                 </form>
 
                 <?php if ($error): ?>
@@ -116,10 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <?php if ($success): ?>
                     <div class="success"><?php echo $success; ?></div>
                 <?php endif; ?>
-
             </div>
-
         </div>
-
     </body>
 </html>

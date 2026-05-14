@@ -20,13 +20,14 @@ CREATE TABLE PERSONA (
 -- =========================================
 
 CREATE TABLE UTENTE (
-    id INT PRIMARY KEY,
+    id_persona INT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     username VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     stato VARCHAR(50) NOT NULL,
+    data_registrazione DATETIME NOT NULL,
 
-    FOREIGN KEY (id)
+    FOREIGN KEY (id_persona)
         REFERENCES PERSONA(id)
         ON DELETE CASCADE
 );
@@ -58,7 +59,7 @@ CREATE TABLE ORDINE (
     tipo_acquisizione VARCHAR(50) NOT NULL,
 
     FOREIGN KEY (utente_id)
-        REFERENCES UTENTE(id)
+        REFERENCES UTENTE(id_persona)
         ON DELETE CASCADE
 );
 
@@ -72,14 +73,15 @@ CREATE TABLE RECENSIONE (
     utente_id INT NOT NULL,
     ordine_id INT NOT NULL UNIQUE,
 
+    data_pubblicazione DATETIME NOT NULL,
     voto INT NOT NULL,
     commento TEXT,
-    stato VARCHAR(50) NOT NULL,
+    stato VARCHAR(50) NOT NULL
 
     CHECK (voto >= 1 AND voto <= 5),
 
     FOREIGN KEY (utente_id)
-        REFERENCES UTENTE(id)
+        REFERENCES UTENTE(id_persona)
         ON DELETE CASCADE,
 
     FOREIGN KEY (ordine_id)
@@ -102,9 +104,9 @@ CREATE TABLE CONSEGNA (
     citta VARCHAR(100) NOT NULL,
     cap VARCHAR(10) NOT NULL,
 
-    stato VARCHAR(50) NOT NULL,
+    stato VARCHAR(50) NOT NULL
 
-    CHECK (stato IN ('IN_ATTESA','ACCETTATA','CONSEGNATA'))
+    CHECK (stato IN ('CREATA','IN_ATTESA','IN_CONSEGNA','CONSEGNATA')),
 
     FOREIGN KEY (ordine_id)
         REFERENCES ORDINE(id)
@@ -246,4 +248,311 @@ CREATE TABLE REVISIONE (
     FOREIGN KEY (veicolo_id)
         REFERENCES VEICOLO(id)
         ON DELETE CASCADE
+);
+
+-- =========================================
+-- INSERIMENTO NEL DB
+-- IMPORTANTE: togliere il controllo sulle password, altrimenti l'utente non può fare l'accesso
+-- =========================================
+
+-- =========================================
+-- PERSONE
+-- =========================================
+
+INSERT INTO PERSONA (id, nome, cognome)
+VALUES
+(1, 'Mario', 'Rossi'),
+(2, 'Luigi', 'Verdi'),
+(3, 'Anna', 'Bianchi'),
+(4, 'Paolo', 'Neri');
+
+-- =========================================
+-- UTENTE
+-- =========================================
+
+INSERT INTO UTENTE (
+    id_persona,
+    email,
+    username,
+    password,
+    stato,
+    data_registrazione
+)
+VALUES (
+    1,
+    'mario.rossi@example.com',
+    'mariorossi',
+    '0',
+    'ATTIVO',
+    NOW()
+);
+
+-- =========================================
+-- DIPENDENTI
+-- =========================================
+
+INSERT INTO DIPENDENTE (
+    id,
+    ruolo,
+    password
+)
+VALUES
+(2, 'fattorino', '0'),
+(3, 'pizzaiolo', '0'),
+(4, 'cassiere', '0');
+
+-- =========================================
+-- INGREDIENTI
+-- =========================================
+
+INSERT INTO INGREDIENTE (
+    id,
+    nome,
+    prezzo,
+    descrizione
+)
+VALUES
+(
+    1,
+    'Mozzarella',
+    1.50,
+    'Mozzarella fiordilatte'
+),
+(
+    2,
+    'Pomodoro',
+    1.00,
+    'Salsa di pomodoro'
+),
+(
+    3,
+    'Salame piccante',
+    2.00,
+    'Salame piccante'
+),
+(
+    4,
+    'Funghi',
+    1.80,
+    'Funghi champignon'
+);
+
+-- =========================================
+-- PIZZE
+-- =========================================
+
+INSERT INTO PIZZA (
+    id,
+    nome,
+    descrizione,
+    prezzo,
+    disponibilita,
+    dimensione,
+    impasto
+)
+VALUES
+(
+    1,
+    'Margherita',
+    'Pizza classica con pomodoro e mozzarella',
+    7.50,
+    TRUE,
+    'M',
+    'classico'
+),
+(
+    2,
+    'Diavola',
+    'Pizza con salame piccante',
+    9.00,
+    TRUE,
+    'M',
+    'classico'
+);
+
+-- =========================================
+-- RICETTE
+-- =========================================
+
+INSERT INTO RICETTA (
+    pizza_id,
+    ingrediente_id
+)
+VALUES
+-- Margherita
+(1, 1),
+(1, 2),
+
+-- Diavola
+(2, 1),
+(2, 2),
+(2, 3);
+
+-- =========================================
+-- VEICOLI
+-- =========================================
+
+INSERT INTO VEICOLO (
+    id,
+    tipo,
+    stato_operativo
+)
+VALUES
+(
+    1,
+    'moto',
+    'OPERATIVO'
+),
+(
+    2,
+    'auto',
+    'OPERATIVO'
+);
+
+-- =========================================
+-- REVISIONE
+-- =========================================
+
+INSERT INTO REVISIONE (
+    veicolo_id,
+    data,
+    prezzo,
+    note
+)
+VALUES
+(
+    1,
+    '2026-01-10',
+    45.00,
+    'Revisione ordinaria moto: tutto regolare'
+),
+(
+    2,
+    '2026-01-12',
+    70.00,
+    'Revisione auto: sostituzione pastiglie freni'
+);
+
+-- =========================================
+-- TURNI
+-- =========================================
+
+INSERT INTO TURNO (
+    id,
+    data,
+    ora_inizio,
+    ora_fine
+)
+VALUES
+(
+    1,
+    CURDATE(),
+    '18:00:00',
+    '23:00:00'
+);
+
+-- =========================================
+-- ASSEGNAZIONE TURNO
+-- =========================================
+
+INSERT INTO ASSEGNAZIONE_TURNO (
+    dipendente_id,
+    turno_id,
+    veicolo_id
+)
+VALUES
+(
+    2,
+    1,
+    1
+);
+
+-- =========================================
+-- ORDINE
+-- =========================================
+
+INSERT INTO ORDINE (
+    id,
+    utente_id,
+    data,
+    stato,
+    tipo_acquisizione
+)
+VALUES
+(
+    1,
+    1,
+    NOW(),
+    'COMPLETATO',
+    'DOMICILIO'
+);
+
+-- =========================================
+-- DETTAGLIO ORDINE
+-- =========================================
+
+INSERT INTO DETTAGLIO_ORDINE (
+    ordine_id,
+    pizza_id,
+    prezzo_finale,
+    note
+)
+VALUES
+(
+    1,
+    1,
+    7.50,
+    'Senza basilico'
+),
+(
+    1,
+    2,
+    9.00,
+    'Extra piccante'
+);
+
+-- =========================================
+-- CONSEGNA
+-- =========================================
+
+INSERT INTO CONSEGNA (
+    ordine_id,
+    fattorino_id,
+    via,
+    n_civico,
+    citta,
+    cap,
+    stato
+)
+VALUES
+(
+    1,
+    2,
+    'Via Roma',
+    '10',
+    'Milano',
+    '20100',
+    'CONSEGNATA'
+);
+
+-- =========================================
+-- RECENSIONE
+-- =========================================
+
+INSERT INTO RECENSIONE (
+    utente_id,
+    ordine_id,
+    data_pubblicazione,
+    voto,
+    commento,
+    stato
+)
+VALUES
+(
+    1,
+    1,
+    NOW(),
+    5,
+    'Pizza ottima e consegna veloce!',
+    'PUBBLICATA'
 );

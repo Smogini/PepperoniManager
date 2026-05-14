@@ -36,3 +36,13 @@ enum Delivery_Status : string {
         ];
     }
 }
+
+enum Review_Status : string {
+    case PUBBLICATA = "PUBBLICATA";
+
+    public static function map(): array {
+        return [
+            'PUBBLICATA' => self::PUBBLICATA->value,
+        ];
+    }
+}

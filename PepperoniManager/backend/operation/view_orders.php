@@ -1,7 +1,7 @@
 <?php
 require_once '../bootstrap.php';
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== "UTENTE") {
+if (!isset($_SESSION['id']) || $_SESSION['role'] !== "UTENTE") {
     header("Location: /PepperoniManager/dashboard.php");
     exit;
 }
@@ -9,11 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== "UTENTE") {
 $dbh = $GLOBALS['db'];
 $id_utente = $_SESSION['id'];
 
-if (
-    $_SERVER['REQUEST_METHOD'] === 'POST'
-    && isset($_POST['recensione_ordine'])
-) {
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recensione_ordine'])) {
     $ordineId = $_POST['ordine_id'];
     $voto = $_POST['voto'];
     $commento = trim($_POST['commento']);
@@ -21,9 +17,8 @@ if (
     $queryCheck = "
         SELECT Id
         FROM RECENSIONE
-        WHERE Ordine_Id = ?
+        WHERE ordine_id = ?
     ";
-
     $stmtCheck = $dbh->prepareQuery($queryCheck);
     $stmtCheck->bind_param("i", $ordineId);
     $stmtCheck->execute();
@@ -31,27 +26,29 @@ if (
     $alreadyExists = $stmtCheck->get_result()->num_rows > 0;
 
     if (!$alreadyExists) {
-        $statoRecensione = "PUBBLICATA";
+        $statoRecensione = Review_Status::PUBBLICATA->value;
+        date_default_timezone_set('Europe/Rome');
+        $data = date("Y-m-d H:i:s");
         $queryInsert = "
             INSERT INTO RECENSIONE (
-                Ordine_Id,
-                Utente_Id,
+                ordine_id,
+                utente_id,
+                data_pubblicazione,
                 voto,
                 commento,
                 stato
             )
             VALUES (?, ?, ?, ?, ?)
         ";
-
         $stmtInsert = $dbh->prepareQuery($queryInsert);
-        $stmtInsert->bind_param("iiiss", $ordineId, $id_utente, $voto, $commento, $statoRecensione);
+        $stmtInsert->bind_param("iisiss", $ordineId, $id_utente, $data, $voto, $commento, $statoRecensione);
         $stmtInsert->execute();
     }
 }
 
 $query = "
     SELECT
-        O.Id,
+        O.id,
         O.data,
         O.stato,
         O.tipo_acquisizione,
@@ -65,18 +62,18 @@ $query = "
     FROM ORDINE O
 
     LEFT JOIN DETTAGLIO_ORDINE DO
-        ON O.Id = DO.Ordine_Id
+    ON O.id = DO.ordine_id
 
     LEFT JOIN RECENSIONE R
-        ON O.Id = R.Ordine_Id
+    ON O.id = R.ordine_id
 
     LEFT JOIN CONSEGNA C
-        ON O.Id = C.Ordine_Id
+    ON O.id = C.ordine_id
 
-    WHERE O.Utente_Id = ?
+    WHERE O.utente_id = ?
 
     GROUP BY
-        O.Id,
+        O.id,
         O.data,
         O.stato,
         O.tipo_acquisizione,
@@ -86,7 +83,6 @@ $query = "
 
     ORDER BY O.data DESC
 ";
-
 $stmt = $dbh->prepareQuery($query);
 $stmt->bind_param("i", $id_utente);
 $stmt->execute();
@@ -104,193 +100,169 @@ $result = $stmt->get_result();
     </head>
 
     <body>
-
         <h2>📋 Il tuo storico ordini</h2>
 
         <?php if ($result->num_rows === 0): ?>
-
             <p style="text-align:center;">Nessun ordine trovato</p>
-
         <?php else: ?>
+            <table>
+                <tr>
+                    <th>Data</th>
+                    <th>Modalità</th>
+                    <th>Stato</th>
+                    <th>Pizze ordinate</th>
+                    <th>Totale (€)</th>
+                    <th>Consegna</th>
+                    <th>Recensione</th>
+                </tr>
 
-        <table>
-            <tr>
-                <th>Data</th>
-                <th>Modalità</th>
-                <th>Stato</th>
-                <th>Pizze ordinate</th>
-                <th>Totale (€)</th>
-                <th>Consegna</th>
-                <th>Recensione</th>
-            </tr>
+                <?php
+                while ($row = $result->fetch_assoc()):
+                    $queryRecensione = "
+                        SELECT Id
+                        FROM RECENSIONE
+                        WHERE ordine_id = ?
+                    ";
+                    $stmtRecensione = $dbh->prepareQuery($queryRecensione);
+                    $stmtRecensione->bind_param("i", $row['Id']);
+                    $stmtRecensione->execute();
 
-            <?php
-            while ($row = $result->fetch_assoc()):
-                $queryRecensione = "
-                    SELECT Id
-                    FROM RECENSIONE
-                    WHERE Ordine_Id = ?
-                ";
-                $stmtRecensione = $dbh->prepareQuery($queryRecensione);
-                $stmtRecensione->bind_param("i", $row['Id']);
-                $stmtRecensione->execute();
+                    $recensioneEsistente = $stmtRecensione->get_result()->num_rows > 0;
+                    $puoRecensire = false;
 
-                $recensioneEsistente = $stmtRecensione->get_result()->num_rows > 0;
-
-                $puoRecensire = false;
-
-                if ($row['voto'] === null) {
-
-                    if ($row['tipo_acquisizione'] === 'ASPORTO'
-                        && $row['stato'] === 'COMPLETATO') {
-
-                        $puoRecensire = true;
-                    }
-
-                    if ($row['tipo_acquisizione'] === 'DOMICILIO'
-                        && $row['stato'] === 'COMPLETATO'
-                        && $row['stato_consegna'] === 'CONSEGNATA') {
-
-                        $puoRecensire = true;
-                    }
-                }
-                $queryDettagli = "
-                    SELECT
-                        P.nome,
-                        DO.prezzo_finale
-                    FROM DETTAGLIO_ORDINE DO
-                
-                    INNER JOIN PIZZA P
-                        ON DO.Pizza_Id = P.Id
-                
-                    WHERE DO.Ordine_Id = ?
-                ";
-                
-                $stmtDettagli = $dbh->prepareQuery($queryDettagli);
-                $stmtDettagli->bind_param("i", $row['Id']);
-                $stmtDettagli->execute();
-                
-                $dettagli = $stmtDettagli->get_result();
-            ?>
-
-            <tr>
-                <td><?php echo $row['data']; ?></td>
-                <td>
-                    <?php
-                        switch ($row['tipo_acquisizione']) {
-                            case 'DOMICILIO':
-                                echo "🏠 Domicilio";
-                                break;
-                            case 'ASPORTO':
-                                echo "🛵 Ordine in consegna";
-                                break;
-                            default:
-                                echo "—";
+                    if ($row['voto'] === null) {
+                        if ($row['tipo_acquisizione'] === 'ASPORTO' && $row['stato'] === 'COMPLETATO') {
+                            $puoRecensire = true;
                         }
-                    ?>
-                </td>
-                <td>
-                    <?php
-                        switch ($row['stato']) {
-                            case 'IN_ATTESA':
-                                echo "🟡 In attesa di accettazione";
-                                break;
-                            case 'ACCETTATO':
-                                echo "🕒 Ordine in preparazione";
-                                break;
-                            case 'COMPLETATO':
-                                echo "🟢 Completato";
-                                break;
-                            default:
-                                echo "—";
+
+                        if ($row['tipo_acquisizione'] === 'DOMICILIO'
+                            && $row['stato'] === 'COMPLETATO'
+                            && $row['stato_consegna'] === 'CONSEGNATA') {
+
+                            $puoRecensire = true;
                         }
-                    ?>
-                </td>
-                <td>
-                    <ul style="margin:0; padding-left:20px;">
+                    }
+                    $queryDettagli = "
+                        SELECT
+                            P.nome,
+                            DO.prezzo_finale
+                        FROM DETTAGLIO_ORDINE DO
+                    
+                        INNER JOIN PIZZA P
+                            ON DO.pizza_id = P.Id
+                    
+                        WHERE DO.ordine_id = ?
+                    ";
+                    $stmtDettagli = $dbh->prepareQuery($queryDettagli);
+                    $stmtDettagli->bind_param("i", $row['Id']);
+                    $stmtDettagli->execute();
+                    
+                    $dettagli = $stmtDettagli->get_result();
+                ?>
 
-                        <?php while ($pizza = $dettagli->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo $row['data']; ?></td>
+                        <td>
+                            <?php
+                                switch ($row['tipo_acquisizione']) {
+                                    case 'DOMICILIO':
+                                        echo "🏠 Domicilio";
+                                        break;
+                                    case 'ASPORTO':
+                                        echo "🛵 Ordine in consegna";
+                                        break;
+                                    default:
+                                        echo "—";
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                switch ($row['stato']) {
+                                    case 'IN_ATTESA':
+                                        echo "🟡 In attesa di accettazione";
+                                        break;
+                                    case 'ACCETTATO':
+                                        echo "🕒 Ordine in preparazione";
+                                        break;
+                                    case 'COMPLETATO':
+                                        echo "🟢 Completato";
+                                        break;
+                                    default:
+                                        echo "—";
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <ul style="margin:0; padding-left:20px;">
+                                <?php while ($pizza = $dettagli->fetch_assoc()): ?>
+                                    <li>
+                                        <?php echo $pizza['nome']; ?>
+                                        -
+                                        €<?php echo number_format(
+                                            $pizza['prezzo_finale'],
+                                            2
+                                        ); ?>
+                                    </li>
+                                <?php endwhile; ?>
+                            </ul>
+                        </td>
+                        <td>
+                            €<?php echo number_format(
+                                $row['totale'],
+                                2
+                            ); ?>
+                        </td>
+                        <td>
+                            <?php if ($row['tipo_acquisizione'] === 'DOMICILIO'): ?>
+                                <?php
+                                    switch ($row['stato_consegna']) {
+                                        case 'IN_ATTESA':
+                                            echo "🟡 In attesa";
+                                            break;
+                                        case 'IN_CONSEGNA':
+                                            echo "🛵 In consegna";
+                                            break;
+                                        case 'CONSEGNATA':
+                                            echo "🟢 Consegnata";
+                                            break;
+                                        default:
+                                            echo "—";
+                                    }
+                                ?>
+                            <?php else: ?>
+                                —
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if ($puoRecensire): ?>
+                                <form method="POST">
+                                    <input type="hidden" name="ordine_id" value="<?php echo $row['id']; ?>">
+                                    <input type="hidden" name="recensione_ordine" value="1">
 
-                            <li>
-                                <?php echo $pizza['nome']; ?>
-                                -
-                                €<?php echo number_format(
-                                    $pizza['prezzo_finale'],
-                                    2
-                                ); ?>
-                            </li>
+                                    <select name="voto" required>
+                                        <option value="">Voto</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
 
-                        <?php endwhile; ?>
+                                    <textarea name="commento" placeholder="Commento"></textarea>
+                                    <button type="submit">Invia</button>
+                                </form>
 
-                    </ul>
-                </td>
-                <td>
-                    €<?php echo number_format(
-                        $row['totale'],
-                        2
-                    ); ?>
-                </td>
-                <td>
-                    <?php if ($row['tipo_acquisizione'] === 'DOMICILIO'): ?>
-                        <?php
-                            switch ($row['stato_consegna']) {
-                                case 'IN_ATTESA':
-                                    echo "🟡 In attesa";
-                                    break;
-                                case 'IN_CONSEGNA':
-                                    echo "🛵 In consegna";
-                                    break;
-                                case 'CONSEGNATA':
-                                    echo "🟢 Consegnata";
-                                    break;
-                                default:
-                                    echo "—";
-                            }
-                        ?>
-                    <?php else: ?>
-                        —
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <?php if ($puoRecensire): ?>
-
-                        <form method="POST">
-
-                            <input type="hidden" name="ordine_id" value="<?php echo $row['Id']; ?>">
-                            <input type="hidden" name="recensione_ordine" value="1">
-
-                            <select name="voto" required>
-                                <option value="">Voto</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-
-                            <textarea name="commento" placeholder="Commento"></textarea>
-
-                            <button type="submit">Invia</button>
-
-                        </form>
-
-                    <?php elseif ($row['voto'] !== null): ?>
-
-                        ⭐ <?php echo $row['voto']; ?>/5<br>
-                        <?php echo htmlspecialchars($row['commento']); ?>
-
-                    <?php else: ?>
-
-                        —
-
-                    <?php endif; ?>
-                </td>
-            </tr>
-
-            <?php endwhile; ?>
-
-        </table>
-
+                            <?php elseif ($row['voto'] !== null): ?>
+                                ⭐ <?= $row['voto']; ?>/5<br>
+                                <?= htmlspecialchars($row['commento']); ?>
+                            <?php else: ?>
+                                —
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </table>
         <?php endif; ?>
 
         <br>

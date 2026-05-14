@@ -17,22 +17,17 @@ $ingredienti = $dbh->executeQuery("
 ");
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $nome = $_POST['nome'];
     $descrizione = $_POST['descrizione'];
-
     $prezzoBase = (float) $_POST['prezzo'];
-
     $disponibilita = isset($_POST['disponibilita']) ? 1 : 0;
 
     $ingredientiSelezionati = $_POST['ingredienti'] ?? [];
 
     try {
-
         $prezzoIngredienti = 0;
 
         if (!empty($ingredientiSelezionati)) {
-
             $placeholders = implode(',', array_fill(0, count($ingredientiSelezionati), '?'));
 
             $stmt = $dbh->prepareQuery("
@@ -40,12 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 FROM INGREDIENTE
                 WHERE id IN ($placeholders)
             ");
-
             $stmt->bind_param(
                 str_repeat("i", count($ingredientiSelezionati)),
                 ...$ingredientiSelezionati
             );
-
             $stmt->execute();
             $result = $stmt->get_result()->fetch_assoc();
 
@@ -63,7 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             )
             VALUES (?, ?, ?, ?)
         ");
-
         $stmt->bind_param(
             "ssdi",
             $nome,
@@ -71,7 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $prezzoFinale,
             $disponibilita
         );
-
         $stmt->execute();
 
         $idPizza = $dbh->getLastInsertId();
@@ -84,13 +75,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 )
                 VALUES (?, ?)
             ");
-
             $stmt->bind_param("ii", $idPizza, $idIngrediente);
             $stmt->execute();
         }
 
         $success = "Pizza inserita con successo!";
-
     } catch (Exception $e) {
         $error = "Errore inserimento pizza";
     }
@@ -109,13 +98,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <body>
         <div class="register-container">
             <div class="register-card">
-
                 <h1>🍕 Nuova Pizza</h1>
                 <p class="subtitle">Inserisci una pizza nel menu</p>
 
                 <form method="POST" class="form">
                     <input type="text" name="nome" placeholder="Nome pizza" required>
-
                     <input type="number"
                         step="0.01"
                         name="prezzo"
@@ -148,9 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <input type="text"  id="js-search" placeholder="Cerca ingrediente...">
 
                     <div id="js-list">
-
                         <?php while($row = $ingredienti->fetch_assoc()): ?>
-
                             <label class="js-item">
                                 <input
                                     type="checkbox"
@@ -162,13 +147,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                     <?php echo $row['nome']; ?>
                                 </span>
                             </label>
-
                         <?php endwhile; ?>
-
                     </div>
 
-                    <div id="js-selected">
-                    </div>
+                    <div id="js-selected"></div>
 
                     <button type="submit" class="action-btn">Inserisci Pizza</button>
                     <a class="action-btn" href="../../dashboard.php">Torna alla dashboard</a>

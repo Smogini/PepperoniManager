@@ -7,7 +7,6 @@ $error = null;
 $success = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $nome = $dbh->escapeString($_POST['nome']);
     $cognome = $dbh->escapeString($_POST['cognome']);
     $email = $dbh->escapeString($_POST['email']);
@@ -22,40 +21,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($check->num_rows > 0) {
         $error = "Username già esistente";
     } else {
-        
        $query = "
             INSERT INTO PERSONA (nome, cognome)
             VALUES (?, ?)
         ";
-
         $stmt = $dbh->prepareQuery($query);
         $stmt->bind_param("ss", $nome, $cognome);
-
         $stmt->execute();
 
         $idPersona = $dbh->getLastInsertId();
-
+        $stato = "ATTIVO";
 
         $query = "
             INSERT INTO UTENTE (
-                id,
+                id_persona,
                 email,
                 username,
                 password,
-                stato
+                stato,
+                data_registrazione
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
         ";
-
-        $stato = 1;
-
         $stmt = $dbh->prepareQuery($query);
-        $stmt->bind_param("issss",
+        date_default_timezone_set('Europe/Rome');
+        $data = date("Y-m-d H:i:s");
+        $stmt->bind_param("isssss",
             $idPersona,
             $email,
             $username,
             $password,
-            $stato
+            $stato,
+            $data
         );
 
         if (!$stmt->execute()) {
@@ -77,40 +74,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </head>
 
     <body>
+        <div class="register-container">
+            <div class="register-card" id="card">
+                <h1>🍕 Registrazione</h1>
+                <p class="subtitle">Crea un nuovo account</p>
 
-    <div class="register-container">
+                <form method="POST" class="form">
+                    <input type="text" name="nome" placeholder="Nome" required>
+                    <input type="text" name="cognome" placeholder="Cognome" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    
+                    <button type="submit" name="register">Registrati</button>
+                    <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>
+                </form>
 
-        <div class="register-card" id="card">
+                <?php if ($error): ?>
+                    <div class="error"><?php echo $error; ?></div>
+                <?php endif; ?>
 
-            <h1>🍕 Registrazione</h1>
-            <p class="subtitle">Crea un nuovo account</p>
-
-            <form method="POST" class="form">
-
-                <input type="text" name="nome" placeholder="Nome" required>
-                <input type="text" name="cognome" placeholder="Cognome" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit" name="register">Registrati</button>
-
-            </form>
-
-            <?php if ($error): ?>
-                <div class="error"><?php echo $error; ?></div>
-            <?php endif; ?>
-
-            <?php if ($success): ?>
-                <div class="success">
-                    <?php echo $success; ?>
-                    <br><br>
-                    <a href="../login.php">Vai al login</a>
-                </div>
-            <?php endif; ?>
-
+                <?php if ($success): ?>
+                    <div class="success">
+                        <?php header("Location: /PepperoniManager/backend/login.php"); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
-
-    </div>
-
     </body>
 </html>

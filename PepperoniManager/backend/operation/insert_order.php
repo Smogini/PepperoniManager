@@ -3,7 +3,7 @@ require_once "../bootstrap.php";
 
 $dbh = $GLOBALS['db'];
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== "UTENTE") {
+if (!isset($_SESSION['id']) || $_SESSION['role'] !== "UTENTE") {
     header("Location: ../login.php");
     exit;
 }
@@ -82,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $n_civico = $_POST['n_civico'] ?? null;
                 $citta = $_POST['citta'] ?? null;
                 $cap = $_POST['cap'] ?? null;
+
                 $query = "
                     INSERT INTO CONSEGNA (
                         ordine_id,
@@ -93,7 +94,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     )
                     VALUES (?, ?, ?, ?, ?, ?)
                 ";
-
                 $stmt = $dbh->prepareQuery($query);
                 $statoConsegna = Delivery_Status::CREATA->value;
                 $stmt->bind_param(
@@ -120,6 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <head>
         <meta charset="UTF-8">
         <title>Nuovo Ordine</title>
+        
         <link rel="stylesheet" href="/PepperoniManager/assets/css/insert.css">
     </head>
 
@@ -138,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         <option value="ASPORTO">Ritiro in locale</option>
                     </select>
 
-                    <div id="deliveryFields" style="display: none; margin-top: 20px;">
+                    <div name="indirizzo_consegna" id="deliveryFields" style="display: none; margin-top: 20px;">
                         <h3>Indirizzo di consegna</h3>
 
                         <input type="text" name="via" id="via" placeholder="Via">
@@ -151,16 +152,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <input type="text" id="js-search" placeholder="🔎 Cerca pizza...">
 
                     <div class="js-list" id="pizzaList">
-
                         <?php while($pizza = $pizze->fetch_assoc()): ?>
-
                             <label class="js-item">
                                 <input
                                     type="checkbox"
                                     name="pizze[]"
                                     value="<?= $pizza['id']; ?>"
                                     class="js-checkbox"
-                                    >
+                                >
                                 <span>
                                     <?= $pizza['nome']; ?>
                                     (€<?= $pizza['prezzo']; ?>)

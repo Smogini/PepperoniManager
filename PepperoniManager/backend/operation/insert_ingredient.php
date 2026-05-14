@@ -12,7 +12,6 @@ $error = null;
 $success = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $nome = $dbh->escapeString($_POST['nome']);
     $prezzo = $_POST['prezzo'];
     $descrizione = $dbh->escapeString($_POST['descrizione']);
@@ -20,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($nome === '' || $prezzo === '') {
         $error = "Compila tutti i campi obbligatori";
     } else {
-
         $query = "
             INSERT INTO INGREDIENTE (
                 nome,
@@ -29,9 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             )
             VALUES (?, ?, ?)
         ";
-
         $stmt = $dbh->prepareQuery($query);
-
         $stmt->bind_param(
             "sds",
             $nome,
@@ -59,23 +55,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <body>
         <div class="register-container">
-
             <div class="register-card">
-
                 <h1>🧄 Nuovo Ingrediente</h1>
                 <p class="subtitle">Aggiungi un ingrediente al menu</p>
 
                 <form method="POST" class="form">
-
                     <input type="text" name="nome" placeholder="Nome ingrediente" required>
-
                     <input type="number" step="0.01" name="prezzo" placeholder="Prezzo (€)" required>
-
                     <input type="text" name="descrizione" placeholder="Descrizione (opzionale)">
 
                     <button type="submit">Inserisci Ingrediente</button>
-                    <a href="../../dashboard.php">Torna alla dashboard</a>
-
+                    <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>
                 </form>
 
                 <?php if ($error): ?>
@@ -85,9 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <?php if ($success): ?>
                     <div class="success"><?php echo $success; ?></div>
                 <?php endif; ?>
-
             </div>
-
         </div>
     </body>
 </html>

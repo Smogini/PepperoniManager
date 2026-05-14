@@ -1,7 +1,7 @@
 <?php
 require_once "../bootstrap.php";
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== "DIPENDENTE" || strtoupper($_SESSION['employ_role']) !== "FATTORINO") {
+if (!isset($_SESSION['id']) || $_SESSION['role'] !== "DIPENDENTE" || strtoupper($_SESSION['employ_role']) !== "FATTORINO") {
     header("Location: ../../dashboard.php");
     exit;
 }
@@ -92,52 +92,49 @@ $assegnate = $dbh->executeQuery("
     </head>
 
     <body>
-
         <h2>🟡 Consegne disponibili</h2>
 
         <?php if ($disponibili->num_rows === 0): ?>
             <p style="text-align:center;">Nessun ordine trovato</p>
         <?php else: ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ordine</th>
+                        <th>Data</th>
+                        <th>Indirizzo</th>
+                        <th>Stato</th>
+                        <th>Azione</th>
+                    </tr>
+                </thead>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Ordine</th>
-                    <th>Data</th>
-                    <th>Indirizzo</th>
-                    <th>Stato</th>
-                    <th>Azione</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php while ($row = $disponibili->fetch_assoc()): ?>
-                    <?php if($row['stato'] !== 'CREATA'): ?>
-                        <tr>
-                            <td>#<?= $row['ordine_id'] ?></td>
-                            <td><?= $row['data'] ?></td>
-                            <td>
-                                <?= $row['via'] ?> <?= $row['n_civico'] ?>, <?= $row['citta'] ?>, <?= $row['cap'] ?>
-                            </td>
-                            <td>
-                                <?php if($row['stato'] === 'IN_ATTESA'): ?>
-                                    🟡 In attesa di accettazione
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php if($row['stato'] === 'IN_ATTESA'): ?>
-                                    <form method="POST">
-                                        <input type="hidden" name="consegna_id" value="<?= $row['consegna_id'] ?>">
-                                        <button type="submit" name="accetta">✅ Accetta</button>
-                                    </form>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-
+                <tbody>
+                    <?php while ($row = $disponibili->fetch_assoc()): ?>
+                        <?php if($row['stato'] !== 'CREATA'): ?>
+                            <tr>
+                                <td>#<?= $row['ordine_id'] ?></td>
+                                <td><?= $row['data'] ?></td>
+                                <td>
+                                    <?= $row['via'] ?> <?= $row['n_civico'] ?>, <?= $row['citta'] ?>, <?= $row['cap'] ?>
+                                </td>
+                                <td>
+                                    <?php if($row['stato'] === 'IN_ATTESA'): ?>
+                                        🟡 In attesa di accettazione
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($row['stato'] === 'IN_ATTESA'): ?>
+                                        <form method="POST">
+                                            <input type="hidden" name="consegna_id" value="<?= $row['consegna_id'] ?>">
+                                            <button type="submit" name="accetta">✅ Accetta</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
         <?php endif; ?>
 
         <h2>🔵 Le mie consegne</h2>
@@ -145,62 +142,59 @@ $assegnate = $dbh->executeQuery("
         <?php if ($assegnate->num_rows === 0): ?>
             <p style="text-align:center;">Nessun ordine trovato</p>
         <?php else: ?>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Ordine</th>
-                    <th>Data</th>
-                    <th>Indirizzo</th>
-                    <th>Stato</th>
-                    <th>Azione</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php while ($row = $assegnate->fetch_assoc()): ?>
+            <table>
+                <thead>
                     <tr>
-                        <td>#<?= $row['ordine_id'] ?></td>
-                        <td><?= $row['data'] ?></td>
-                        <td>
-                            <?= $row['via'] ?> <?= $row['n_civico'] ?>, <?= $row['cap'] ?> <?= $row['citta'] ?>
-                        </td>
-                        <td>
-                            <?php
-                                switch ($row['stato']) {
-                                    case 'IN_ATTESA':
-                                        echo "🟡 In attesa di accettazione";
-                                        break;
-                                    case 'IN_CONSEGNA':
-                                        echo "🛵 In consegna";
-                                        break;
-                                    case 'CONSEGNATA':
-                                        echo "🟢 Consegnata";
-                                        break;
-                                    default:
-                                        echo "—";
-                                }
-                            ?>
-                        </td>
-                        <td>
-                            <?php if($row['stato'] === 'IN_CONSEGNA'): ?>
-                                <form method="POST">
-                                    <input type="hidden" name="ordine_id" value="<?= $row['ordine_id'] ?>">
-                                    <input type="hidden" name="consegna_id" value="<?= $row['consegna_id'] ?>">
-                                    <button type="submit" name="consegna">✅ Completa consegna</button>
-                                </form>
-                            <?php endif; ?>
-                        </td>
+                        <th>Ordine</th>
+                        <th>Data</th>
+                        <th>Indirizzo</th>
+                        <th>Stato</th>
+                        <th>Azione</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+                </thead>
 
+                <tbody>
+                    <?php while ($row = $assegnate->fetch_assoc()): ?>
+                        <tr>
+                            <td>#<?= $row['ordine_id'] ?></td>
+                            <td><?= $row['data'] ?></td>
+                            <td>
+                                <?= $row['via'] ?> <?= $row['n_civico'] ?>, <?= $row['cap'] ?> <?= $row['citta'] ?>
+                            </td>
+                            <td>
+                                <?php
+                                    switch ($row['stato']) {
+                                        case 'IN_ATTESA':
+                                            echo "🟡 In attesa di accettazione";
+                                            break;
+                                        case 'IN_CONSEGNA':
+                                            echo "🛵 In consegna";
+                                            break;
+                                        case 'CONSEGNATA':
+                                            echo "🟢 Consegnata";
+                                            break;
+                                        default:
+                                            echo "—";
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                <?php if($row['stato'] === 'IN_CONSEGNA'): ?>
+                                    <form method="POST">
+                                        <input type="hidden" name="ordine_id" value="<?= $row['ordine_id'] ?>">
+                                        <input type="hidden" name="consegna_id" value="<?= $row['consegna_id'] ?>">
+                                        <button type="submit" name="consegna">✅ Completa consegna</button>
+                                    </form>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
         <?php endif; ?>
 
         <form class="form">
             <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>
         </form>
-
     </body>
 </html>

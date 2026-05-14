@@ -73,66 +73,63 @@ $ordini = $dbh->executeQuery("
             </thead>
 
             <tbody>
+                <?php while ($ordine = $ordini->fetch_assoc()): ?>
 
-            <?php while ($ordine = $ordini->fetch_assoc()): ?>
-
-                <tr>
-                    <td>#<?= $ordine['id'] ?></td>
-                    <td><?= $ordine['data'] ?></td>
-                    <td>
-                        <?php
-                            switch ($ordine['tipo_acquisizione']) {
-                                case 'DOMICILIO':
-                                    echo "🏠 Domicilio";
-                                    break;
-                                case 'ASPORTO':
-                                    echo "🛵 Ordine in consegna";
-                                    break;
-                                default:
-                                    echo "—";
-                            }
-                        ?>
-                    </td>
-                    <td>
-                        <?php
-                            switch ($ordine['stato']) {
-                                case 'IN_ATTESA':
-                                    echo "🟡 In attesa di accettazione";
-                                    break;
-                                case 'ACCETTATO':
-                                    echo "🕒 In preparazione";
-                                    break;
-                                case 'COMPLETATO':
-                                    echo "🟢 Completato";
-                                    break;
-                                default:
-                                    echo "—";
-                            }
-                        ?>
-                    </td>
-                    <td>
-                        <?php if ($ordine['stato'] === "IN_ATTESA"): ?>
-                            <form method="POST">
-                                <input type="hidden" name="ordine_id" value="<?= $ordine['id'] ?>">
-                                <button type="submit" name="accetta">
-                                    ✅ Accetta
-                                </button>
-                            </form>
-                        <?php elseif ($ordine['stato'] === "ACCETTATO"): ?>
-                            <form method="POST">
-                                <input type="hidden" name="ordine_id" value="<?= $ordine['id'] ?>">
-                                <button type="submit" name="completa">
-                                    🍕 Completa
-                                </button>
-                            </form>
-                        <?php else: ?>
-                            🟢 Completato
-                        <?php endif; ?>
-                    </td>
-                </tr>
-
-            <?php endwhile; ?>
-
+                    <tr>
+                        <td>#<?= $ordine['id'] ?></td>
+                        <td><?= $ordine['data'] ?></td>
+                        <td>
+                            <?php
+                                switch ($ordine['tipo_acquisizione']) {
+                                    case 'DOMICILIO':
+                                        echo "🏠 Domicilio";
+                                        break;
+                                    case 'ASPORTO':
+                                        echo "🛵 Ordine in consegna";
+                                        break;
+                                    default:
+                                        echo "—";
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                switch ($ordine['stato']) {
+                                    case 'IN_ATTESA':
+                                        echo "🟡 In attesa di accettazione";
+                                        break;
+                                    case 'ACCETTATO':
+                                        echo "🕒 In preparazione";
+                                        break;
+                                    case 'COMPLETATO':
+                                        echo "🟢 Completato";
+                                        break;
+                                    default:
+                                        echo "—";
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <?php if ($ordine['stato'] === "IN_ATTESA"): ?>
+                                <form method="POST">
+                                    <input type="hidden" name="ordine_id" value="<?= $ordine['id'] ?>">
+                                    <button type="submit" name="accetta">
+                                        ✅ Accetta
+                                    </button>
+                                </form>
+                            <?php elseif ($ordine['stato'] === "ACCETTATO"): ?>
+                                <form method="POST">
+                                    <input type="hidden" name="ordine_id" value="<?= $ordine['id'] ?>">
+                                    <button type="submit" name="completa">
+                                        🍕 Completa
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                🟢 Completato
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
             </tbody>
 
         </table>
@@ -140,6 +137,5 @@ $ordini = $dbh->executeQuery("
         <form class="form">
             <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>
         </form>
-
     </body>
 </html>

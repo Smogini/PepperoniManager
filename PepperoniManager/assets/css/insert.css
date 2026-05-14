@@ -182,3 +182,138 @@ h2 {
     border-radius: 20px;
     font-size: 14px;
 }
+
+.page-container {
+    width:90%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+.searchbar {
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    margin-bottom:20px;
+    box-sizing:border-box;
+}
+
+.utente-card {
+    background:white;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    padding:25px;
+}
+
+.utente-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.utente-title {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.utente-title h2 {
+    margin:0;
+    text-align:left;
+}
+
+.utente-info {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.info-box {
+    background:#f8f8f8;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+}
+
+details {
+    background:#fafafa;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+    margin-top:15px;
+}
+
+summary {
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.ordine-item,
+.recensione-item {
+    border-top:1px solid #ddd;
+    padding:15px 0;
+}
+
+.ordine-item:first-child,
+.recensione-item:first-child {
+    border-top:none;
+}
+
+.badge {
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    background:#3498db;
+    color:white;
+    font-size:13px;
+}
+
+.actions {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+.actions form {
+    margin:0;
+}
+
+.btn-danger,
+.btn-warning,
+.btn-success {
+    border:none;
+    border-radius:8px;
+    padding:10px 14px;
+    color:white;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btn-danger {
+    background:#e74c3c;
+}
+
+.btn-danger:hover {
+    background:#c0392b;
+}
+
+.btn-warning {
+    background:#f39c12;
+}
+
+.btn-warning:hover {
+    background:#d68910;
+}
+
+.btn-success {
+    background:#27ae60;
+}
+
+.btn-success:hover {
+    background:#1e8449;
+}
