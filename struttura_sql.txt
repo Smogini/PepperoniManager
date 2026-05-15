@@ -5,19 +5,11 @@
 CREATE DATABASE pepperoni_db;
 USE pepperoni_db;
 
--- =========================================
--- PERSONA
--- =========================================
-
 CREATE TABLE PERSONA (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     cognome VARCHAR(100) NOT NULL
 );
-
--- =========================================
--- UTENTE
--- =========================================
 
 CREATE TABLE UTENTE (
     id_persona INT PRIMARY KEY,
@@ -32,10 +24,6 @@ CREATE TABLE UTENTE (
         ON DELETE CASCADE
 );
 
--- =========================================
--- DIPENDENTE
--- =========================================
-
 CREATE TABLE DIPENDENTE (
     id INT PRIMARY KEY,
     ruolo ENUM('fattorino','pizzaiolo','cassiere') NOT NULL,
@@ -45,10 +33,6 @@ CREATE TABLE DIPENDENTE (
         REFERENCES PERSONA(id)
         ON DELETE CASCADE
 );
-
--- =========================================
--- ORDINE
--- =========================================
 
 CREATE TABLE ORDINE (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,10 +46,6 @@ CREATE TABLE ORDINE (
         REFERENCES UTENTE(id_persona)
         ON DELETE CASCADE
 );
-
--- =========================================
--- RECENSIONE
--- =========================================
 
 CREATE TABLE RECENSIONE (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,10 +68,6 @@ CREATE TABLE RECENSIONE (
         REFERENCES ORDINE(id)
         ON DELETE CASCADE
 );
-
--- =========================================
--- CONSEGNA
--- =========================================
 
 CREATE TABLE CONSEGNA (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -117,10 +93,6 @@ CREATE TABLE CONSEGNA (
         ON DELETE CASCADE
 );
 
--- =========================================
--- PIZZA
--- =========================================
-
 CREATE TABLE PIZZA (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -133,10 +105,6 @@ CREATE TABLE PIZZA (
     impasto ENUM('classico', 'integrale', 'senza_glutine') NOT NULL
 );
 
--- =========================================
--- INGREDIENTE
--- =========================================
-
 CREATE TABLE INGREDIENTE (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -144,10 +112,6 @@ CREATE TABLE INGREDIENTE (
     prezzo DECIMAL(6,2) NOT NULL,
     descrizione TEXT
 );
-
--- =========================================
--- RICETTA (PIZZA - INGREDIENTE)
--- =========================================
 
 CREATE TABLE RICETTA (
     pizza_id INT NOT NULL,
@@ -163,10 +127,6 @@ CREATE TABLE RICETTA (
         REFERENCES INGREDIENTE(id)
         ON DELETE CASCADE
 );
-
--- =========================================
--- DETTAGLIO ORDINE
--- =========================================
 
 CREATE TABLE DETTAGLIO_ORDINE (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -185,10 +145,6 @@ CREATE TABLE DETTAGLIO_ORDINE (
         REFERENCES PIZZA(id)
 );
 
--- =========================================
--- TURNO
--- =========================================
-
 CREATE TABLE TURNO (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -197,20 +153,12 @@ CREATE TABLE TURNO (
     ora_fine TIME NOT NULL
 );
 
--- =========================================
--- VEICOLO
--- =========================================
-
 CREATE TABLE VEICOLO (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
     tipo VARCHAR(100) NOT NULL,
     stato_operativo VARCHAR(50) NOT NULL
 );
-
--- =========================================
--- ASSEGNAZIONE TURNO
--- =========================================
 
 CREATE TABLE ASSEGNAZIONE_TURNO (
     dipendente_id INT NOT NULL,
@@ -232,10 +180,6 @@ CREATE TABLE ASSEGNAZIONE_TURNO (
         ON DELETE SET NULL
 );
 
--- =========================================
--- REVISIONE
--- =========================================
-
 CREATE TABLE REVISIONE (
     veicolo_id INT NOT NULL,
     data DATE NOT NULL,
@@ -255,20 +199,12 @@ CREATE TABLE REVISIONE (
 -- IMPORTANTE: togliere il controllo sulle password, altrimenti l'utente non può fare l'accesso
 -- =========================================
 
--- =========================================
--- PERSONE
--- =========================================
-
 INSERT INTO PERSONA (id, nome, cognome)
 VALUES
 (1, 'Mario', 'Rossi'),
 (2, 'Luigi', 'Verdi'),
 (3, 'Anna', 'Bianchi'),
 (4, 'Paolo', 'Neri');
-
--- =========================================
--- UTENTE
--- =========================================
 
 INSERT INTO UTENTE (
     id_persona,
@@ -287,10 +223,6 @@ VALUES (
     NOW()
 );
 
--- =========================================
--- DIPENDENTI
--- =========================================
-
 INSERT INTO DIPENDENTE (
     id,
     ruolo,
@@ -300,10 +232,6 @@ VALUES
 (2, 'fattorino', '0'),
 (3, 'pizzaiolo', '0'),
 (4, 'cassiere', '0');
-
--- =========================================
--- INGREDIENTI
--- =========================================
 
 INSERT INTO INGREDIENTE (
     id,
@@ -337,10 +265,6 @@ VALUES
     'Funghi champignon'
 );
 
--- =========================================
--- PIZZE
--- =========================================
-
 INSERT INTO PIZZA (
     id,
     nome,
@@ -370,10 +294,6 @@ VALUES
     'classico'
 );
 
--- =========================================
--- RICETTE
--- =========================================
-
 INSERT INTO RICETTA (
     pizza_id,
     ingrediente_id
@@ -387,10 +307,6 @@ VALUES
 (2, 1),
 (2, 2),
 (2, 3);
-
--- =========================================
--- VEICOLI
--- =========================================
 
 INSERT INTO VEICOLO (
     id,
@@ -408,10 +324,6 @@ VALUES
     'auto',
     'OPERATIVO'
 );
-
--- =========================================
--- REVISIONE
--- =========================================
 
 INSERT INTO REVISIONE (
     veicolo_id,
@@ -433,10 +345,6 @@ VALUES
     'Revisione auto: sostituzione pastiglie freni'
 );
 
--- =========================================
--- TURNI
--- =========================================
-
 INSERT INTO TURNO (
     id,
     data,
@@ -451,10 +359,6 @@ VALUES
     '23:00:00'
 );
 
--- =========================================
--- ASSEGNAZIONE TURNO
--- =========================================
-
 INSERT INTO ASSEGNAZIONE_TURNO (
     dipendente_id,
     turno_id,
@@ -466,10 +370,6 @@ VALUES
     1,
     1
 );
-
--- =========================================
--- ORDINE
--- =========================================
 
 INSERT INTO ORDINE (
     id,
@@ -486,10 +386,6 @@ VALUES
     'COMPLETATO',
     'DOMICILIO'
 );
-
--- =========================================
--- DETTAGLIO ORDINE
--- =========================================
 
 INSERT INTO DETTAGLIO_ORDINE (
     ordine_id,
@@ -511,10 +407,6 @@ VALUES
     'Extra piccante'
 );
 
--- =========================================
--- CONSEGNA
--- =========================================
-
 INSERT INTO CONSEGNA (
     ordine_id,
     fattorino_id,
@@ -534,10 +426,6 @@ VALUES
     '20100',
     'CONSEGNATA'
 );
-
--- =========================================
--- RECENSIONE
--- =========================================
 
 INSERT INTO RECENSIONE (
     utente_id,

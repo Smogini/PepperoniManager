@@ -1,12 +1,4 @@
 <?php
-require_once 'DatabaseHelper.php';
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-$GLOBALS['db'] = new DatabaseHelper();
-
 enum Order_Status : string {
     case IN_ATTESA = "IN_ATTESA";
     case ACCETTATO = "ACCETTATO";
@@ -46,3 +38,4 @@ enum Review_Status : string {
         ];
     }
 }
+?>
