@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.register-card {
+    width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.subtitle {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form input {
+    width: 90%;
+    max-width: 300px;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.form input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52,152,219,0.4);
+}
+
+.form button {
+    width: 90%;
+    max-width: 300px;
+    padding: 12px;
+    margin-top: 10px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.form button:hover {
+    background: #1e8449;
+}
+
+.error {
+    margin-top: 15px;
+    color: red;
+}
+
+.success {
+    margin-top: 15px;
+    color: green;
+}
+
+.success a {
+    text-decoration: none;
+    color: #3498db;
+}

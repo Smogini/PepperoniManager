@@ -1,0 +1,26 @@
+body {
+    font-family: Arial;
+}
+
+.box {
+    width: 500px;
+    margin: 50px auto;
+}
+
+a {
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+    background: #eee;
+    text-decoration: none;
+}
+
+a:hover {
+    background: #ddd;
+}
+
+.admin { background: #2c3e50; color: white; }
+
+.dipendente { background: #1e8449; color: white; }
+
+.utente { background: #f4f4f4; }
