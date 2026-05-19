@@ -4,7 +4,7 @@ require_once '../config/auth.php';
 require_once '../queries/deliveries.php';
 require_once '../queries/orders.php';
 
-requireAuth();
+startSession();
 
 $conn = Database::getConnection();
 
@@ -29,6 +29,7 @@ try {
     header("Location: ../pages/manage_deliveries.php");
     exit;
 } catch(Exception $e) {
+    $conn->rollback();
     header("Location: ../pages/manage_deliveries.php?error=" . urlencode($e->getMessage()));
     exit;
 }

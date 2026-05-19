@@ -98,10 +98,10 @@ function acceptDelivery(mysqli $conn, int $deliveryId, int $courierId): bool {
     ";
 
     $shippingStatus = Delivery_Status::IN_CONSEGNA->value;
-    $createdStatus = Delivery_Status::CREATA->value;
+    $holdStatus = Delivery_Status::IN_ATTESA->value;
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("isis", $courierId, $shippingStatus, $deliveryId, $createdStatus);
+    $stmt->bind_param("isis", $courierId, $shippingStatus, $deliveryId, $holdStatus);
     
     return $stmt->execute();
 }

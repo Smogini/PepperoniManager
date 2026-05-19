@@ -5,7 +5,7 @@ require_once '../queries/orders.php';
 require_once '../queries/deliveries.php';
 require_once '../queries/pizzas.php';
 
-requireAuth();
+startSession();
 
 $conn = Database::getConnection();
 
@@ -50,9 +50,7 @@ try {
             $_POST['citta'],
             $_POST['cap']
         )) {
-            $e = "Errore nell'inserimento della consegna per l'ordine #" . urlencode($orderId);
-            header("Location: ../pages/create_order.php?error=" . urlencode($e));
-            exit;
+            throw new Exception("Errore nell'inserimento della consegna per l'ordine #" . urlencode($orderId));
         }
     }
 

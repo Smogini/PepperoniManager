@@ -1,7 +1,10 @@
 <?php
 require_once '../config/database.php';
+require_once '../config/auth.php';
 require_once '../queries/orders.php';
 require_once '../queries/reviews.php';
+
+requireAuth("UTENTE");
 
 $conn = Database::getConnection();
 
@@ -25,9 +28,9 @@ $error = $_GET['error'] ?? null;
         <h2>📋 Il tuo storico ordini</h2>
 
         <?php if ($error): ?>
-            <p style="color:red; text-align:center;">
+            <div class="error">
                 <?= htmlspecialchars($error) ?>
-            </p>
+        </div>
         <?php endif; ?>
 
         <?php if (empty($result)): ?>
@@ -111,8 +114,8 @@ $error = $_GET['error'] ?? null;
                         <td>€<?= number_format($row['totale'], 2) ?></td>
                         <td>
                             <?php
-                            if ($row['tipo_acquisizione'] === 'ASPORTO') {
-                                echo match($row['stato']) {
+                            if ($row['tipo_acquisizione'] === 'DOMICILIO') {
+                                echo match($row['stato_consegna']) {
                                     Delivery_Status::CREATA->value => '🕒 In elaborazione',
                                     Delivery_Status::IN_ATTESA->value => '🟡 In attesa di accettazione',
                                     Delivery_Status::IN_CONSEGNA->value => '🛵 In consegna',

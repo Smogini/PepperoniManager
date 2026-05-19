@@ -61,3 +61,20 @@ function insertUser(
 
     return $stmt->execute();
 }
+
+function gettAllUsers(mysqli $conn): array {
+    return $conn->execute_query("
+        SELECT
+            u.id_persona AS utente_id,
+            u.*,
+
+            p.nome,
+            p.cognome
+
+    FROM UTENTE u
+    INNER JOIN PERSONA p
+    ON u.id_persona = p.id
+
+    ORDER BY p.cognome, p.nome
+    ")->fetch_all(MYSQLI_ASSOC);
+}

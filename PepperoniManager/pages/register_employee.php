@@ -1,4 +1,8 @@
 <?php
+require_once '../config/auth.php';
+
+requireAuth("AMMINISTRATORE");
+
 $error = $_GET['error'] ?? null;
 $success = $_GET['success'] ?? null;
 ?>
@@ -36,7 +40,7 @@ $success = $_GET['success'] ?? null;
                 </form>
 
                 <?php if ($error): ?>
-                    <div class="error"><?php echo $error; ?></div>
+                    <div class="error"><?= $error; ?></div>
                 <?php endif; ?>
 
                 <?php if ($success): ?>

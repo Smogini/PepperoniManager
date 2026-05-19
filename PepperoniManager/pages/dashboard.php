@@ -1,11 +1,13 @@
 <?php
 require_once '../config/auth.php';
 
-requireAuth();
+startSession();
 
 $role = getUserRole();
 $employ_role = getEmployeeRole();
 $username = getUsername();
+
+requireAuth($role);
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +32,7 @@ $username = getUsername();
             <?php elseif ($role === "DIPENDENTE"): ?>
                 <h2>Area Dipendente (<?= htmlspecialchars($employ_role) ?>)</h2>
 
-                <?php if ($employ_role === 'fattorino'): ?>
+                <?php if ($employ_role === 'FATTORINO'): ?>
                     <a href="/PepperoniManager/pages/manage_deliveries.php">🛵 Gestisci consegne</a>
                 <?php else: ?>
                     <a href="/PepperoniManager/pages/manage_orders.php">📦 Gestisci ordini</a>
@@ -47,8 +49,8 @@ $username = getUsername();
                     <a href="/PepperoniManager/pages/insert_pizza.php">🍕 Inserisci pizza</a>
                     <a href="/PepperoniManager/pages/insert_ingredient.php">🧀 Inserisci ingrediente</a>
                     <a href="/PepperoniManager/pages/insert_shift.php">📅 Inserisci turno</a>
-                    <a href="/PepperoniManager/pages/view_users.php">👥 Gestisci utenti</a>
-                    <a href="/PepperoniManager/pages/view_reports.php">📊 Statistiche e report</a>
+                    <a href="/PepperoniManager/pages/manage_users.php">👥 Gestisci utenti</a>
+                    <a href="/PepperoniManager/pages/manage_reports.php">📊 Statistiche e report</a>
             <?php endif; ?>
 
             <br><br>

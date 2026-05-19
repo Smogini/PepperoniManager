@@ -1,4 +1,8 @@
 <?php
+require_once '../config/auth.php';
+
+requireAuth("AMMINISTRATORE");
+
 $success = $_GET['success'] ?? null;
 $error = $_GET['error'] ?? null;
 ?>

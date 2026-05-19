@@ -3,7 +3,7 @@ require_once '../config/database.php';
 require_once '../config/auth.php';
 require_once '../queries/orders.php';
 
-requireAuth();
+requireAuth("DIPENDENTE");
 
 $conn = Database::getConnection();
 
@@ -28,7 +28,7 @@ $error = $_GET['error'] ?? null;
 
         <?php if ($error): ?>
             <div class="error">
-                <?= htmlspecialchars($error) ?>
+                <?= $error ?>
             </div>
         <?php endif; ?>
 

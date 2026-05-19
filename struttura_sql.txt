@@ -26,7 +26,7 @@ CREATE TABLE UTENTE (
 
 CREATE TABLE DIPENDENTE (
     id INT PRIMARY KEY,
-    ruolo ENUM('fattorino','pizzaiolo','cassiere') NOT NULL,
+    ruolo ENUM('FATTORINO','PIZZAIOLO','CASSIERE') NOT NULL,
     password VARCHAR(255) NOT NULL,
 
     FOREIGN KEY (id)
@@ -229,9 +229,9 @@ INSERT INTO DIPENDENTE (
     password
 )
 VALUES
-(2, 'fattorino', '0'),
-(3, 'pizzaiolo', '0'),
-(4, 'cassiere', '0');
+(2, 'FATTORINO', '0'),
+(3, 'PIZZAIOLO', '0'),
+(4, 'CASSIERE', '0');
 
 INSERT INTO INGREDIENTE (
     id,

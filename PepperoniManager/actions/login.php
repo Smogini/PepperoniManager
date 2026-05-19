@@ -1,10 +1,9 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 require_once '../config/database.php';
+require_once '../config/auth.php';
 require_once '../queries/auth.php';
+
+startSession();
 
 $conn = Database::getConnection();
 
@@ -41,7 +40,7 @@ try {
 
             $_SESSION['role'] = "DIPENDENTE";
             $_SESSION['id'] = $emp['id'];
-            $_SESSION['employ_role'] = $emp['ruolo'];
+            $_SESSION['employee_role'] = $emp['ruolo'];
             $_SESSION['username'] = $emp['nome'];
 
             $userFound = true;

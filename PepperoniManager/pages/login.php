@@ -1,12 +1,10 @@
 <?php
+require_once '../config/auth.php';
+
 $mode = $_POST['mode'] ?? 'UTENTE';
 $error = $_GET['error'] ?? null;
 
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: login.php");
-    exit;
-}
+destroySession(isset($_GET['logout']));
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +43,7 @@ if (isset($_GET['logout'])) {
 
                 <?php if ($error): ?>
                     <div class="error">
-                        <?= htmlspecialchars($error) ?>
+                        <?= $error ?>
                     </div>
                 <?php endif; ?>
             </div>

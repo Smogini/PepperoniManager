@@ -1,6 +1,9 @@
 <?php
 require_once '../config/database.php';
+require_once '../config/auth.php';
 require_once '../queries/ingredients.php';
+
+requireAuth("AMMINISTRATORE");
 
 $conn = Database::getConnection();
 
@@ -77,7 +80,7 @@ $success = $_GET['success'] ?? null;
                 </form>
 
                 <?php if ($error): ?>
-                    <div class="error"><?php echo $error; ?></div>
+                    <div class="error"><?= $error; ?></div>
                 <?php endif; ?>
 
                 <?php if ($success): ?>

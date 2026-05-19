@@ -4,17 +4,9 @@ require_once '../config/auth.php';
 require_once '../config/element_status.php';
 require_once '../queries/deliveries.php';
 
-requireAuth();
+requireAuth("DIPENDENTE", "FATTORINO");
 
 $conn = Database::getConnection();
-
-$role = getUserRole();
-$employeeRole = getEmployeeRole();
-
-if ($role !== "DIPENDENTE" || strtoupper($employeeRole) !== "FATTORINO") {
-    header("Location: /PepperoniManager/pages/dashboard.php");
-    exit;
-}
 
 $courierId = $_SESSION['id'];
 

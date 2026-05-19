@@ -4,7 +4,7 @@ require_once '../config/auth.php';
 require_once '../queries/orders.php';
 require_once '../queries/deliveries.php';
 
-requireAuth();
+startSession();
 
 $conn = Database::getConnection();
 

@@ -47,15 +47,15 @@ $success = $_GET['success'] ?? null;
                 </form>
 
                 <?php if ($error): ?>
-                    <p style="color:red;">
-                        <?= htmlspecialchars($error) ?>
-                    </p>
+                    <div class="error">
+                        <?= $error ?>
+                    </div>
                 <?php endif; ?>
 
                 <?php if ($success): ?>
-                    <p style="color:green;">
+                    <div class="success">
                         Veicolo inserito con successo
-                    </p>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

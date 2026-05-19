@@ -3,7 +3,7 @@ require_once '../config/database.php';
 require_once '../config/auth.php';
 require_once '../queries/orders.php';
 
-requireAuth();
+startSession();
 
 $conn = Database::getConnection();
 

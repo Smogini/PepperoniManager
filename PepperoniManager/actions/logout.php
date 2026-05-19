@@ -1,5 +1,4 @@
 <?php
-session_destroy();
+require_once '../config/auth.php';
 
-header("Location: ../pages/login.php");
-exit;
+destroySession(true);

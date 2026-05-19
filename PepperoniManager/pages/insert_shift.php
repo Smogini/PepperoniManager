@@ -1,7 +1,10 @@
 <?php
 require_once '../config/database.php';
+require_once '../config/auth.php';
 require_once '../queries/employees.php';
 require_once '../queries/vehicles.php';
+
+requireAuth("AMMINISTRATORE");
 
 $conn = Database::getConnection();
 
@@ -54,7 +57,7 @@ $error = $_GET['error'] ?? null;
                                         <?php
                                         foreach($veicoli as $veicolo):
                                         ?>
-                                            <option value="<?php echo $veicolo['id']; ?>">
+                                            <option value="<?= $veicolo['id']; ?>">
                                                 <?= $veicolo['id'] . " - " . $veicolo['tipo']; ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -72,7 +75,7 @@ $error = $_GET['error'] ?? null;
 
                 <?php if ($error): ?>
                     <div class="error">
-                        <?php echo $error; ?>
+                        <?= $error; ?>
                     </div>
                 <?php endif; ?>
                 <?php if ($success): ?>

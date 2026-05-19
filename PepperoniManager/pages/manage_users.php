@@ -1,90 +1,27 @@
 <?php
-require_once '../bootstrap.php';
+require_once '../config/database.php';
+require_once '../config/auth.php';
+require_once '../queries/users.php';
+require_once '../queries/orders.php';
+require_once '../queries/reviews.php';
 
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== "AMMINISTRATORE") {
-    header("Location: ../login.php");
-    exit;
-}
+requireAuth("AMMINISTRATORE");
 
-$dbh = $GLOBALS['db'];
+$conn = Database::getConnection();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$utenti = gettAllUsers($conn);
 
-    if (isset($_POST['toggle_utente'])) {
-
-        $utenteId = intval($_POST['utente_id']);
-        $nuovoStato = $_POST['nuovo_stato'];
-
-        $query = "
-            UPDATE UTENTE
-            SET stato = ?
-            WHERE id_persona = ?
-        ";
-
-        $stmt = $dbh->prepareQuery($query);
-
-        $stmt->bind_param(
-            "si",
-            $nuovoStato,
-            $utenteId
-        );
-
-        $stmt->execute();
-    }
-
-    if (isset($_POST['toggle_recensione'])) {
-
-        $recensioneId = intval($_POST['recensione_id']);
-        $nuovoStato = $_POST['nuovo_stato'];
-
-        $query = "
-            UPDATE RECENSIONE
-            SET stato = ?
-            WHERE id = ?
-        ";
-
-        $stmt = $dbh->prepareQuery($query);
-
-        $stmt->bind_param(
-            "si",
-            $nuovoStato,
-            $recensioneId
-        );
-
-        $stmt->execute();
-    }
-
-    header("Location: view_users.php");
-    exit;
-}
-
-$queryUtenti = "
-    SELECT
-        u.id_persona AS utente_id,
-        u.*,
-
-        p.nome,
-        p.cognome
-
-    FROM UTENTE u
-    INNER JOIN PERSONA p
-        ON u.id_persona = p.id
-
-    ORDER BY p.cognome, p.nome
-";
-
-$utenti = $dbh->executeQuery($queryUtenti);
+$success = $_GET['success'] ?? null;
+$error = $_GET['error'] ?? null;
 ?>
 
 <!DOCTYPE html>
 <html lang="it">
-
     <head>
-
         <meta charset="UTF-8">
         <title>Gestione utenti</title>
 
-        <link rel="stylesheet" href="/PepperoniManager/assets/css/insert.css">
+        <link rel="stylesheet" href="/PepperoniManager/assets/css/style.css">
     </head>
 
     <body>
@@ -183,23 +120,11 @@ $utenti = $dbh->executeQuery($queryUtenti);
                             <summary>Ordini</summary>
 
                             <?php
-                            $queryOrdini = "
-                                SELECT *
-                                FROM ORDINE
-                                WHERE utente_id = ?
-                                ORDER BY data DESC
-                            ";
-                            $stmtOrdini = $dbh->prepareQuery($queryOrdini);
-                            $stmtOrdini->bind_param("i", $utente['utente_id']);
-                            $stmtOrdini->execute();
-
-                            $ordini = $stmtOrdini
-                                ->get_result()
-                                ->fetch_all(MYSQLI_ASSOC);
+                            $ordiniUtente = getUserOrders($conn, $utente['utente_id']);
                             ?>
 
-                            <?php if(count($ordini) > 0): ?>
-                                <?php foreach($ordini as $ordine): ?>
+                            <?php if(!empty($ordiniUtente)): ?>
+                                <?php foreach($ordiniUtente as $ordine): ?>
                                     <div class="ordine-item">
                                         <strong>
                                             Ordine #<?= $ordine['id'] ?>
@@ -231,27 +156,7 @@ $utenti = $dbh->executeQuery($queryUtenti);
                             </summary>
 
                             <?php
-                            $queryRecensioni = "
-                                SELECT
-                                    r.*
-
-                                FROM RECENSIONE r
-
-                                INNER JOIN ORDINE o
-                                    ON r.ordine_id = o.id
-
-                                WHERE o.utente_id = ?
-
-                                ORDER BY r.data_pubblicazione DESC
-                            ";
-                            $stmtRecensioni = $dbh->prepareQuery($queryRecensioni);
-                            $stmtRecensioni->bind_param(
-                                "i",
-                                $utente['utente_id']
-                            );
-                            $stmtRecensioni->execute();
-
-                            $recensioni = $stmtRecensioni->get_result()->fetch_all(MYSQLI_ASSOC);
+                            $recensioni = getUserReviews($conn, $utente['utente_id']);
                             ?>
 
                             <?php if(count($recensioni) > 0): ?>
@@ -334,8 +239,20 @@ $utenti = $dbh->executeQuery($queryUtenti);
             </div>
         </div>
 
+        <?php if ($error): ?>
+            <div class="error">
+                <?= htmlspecialchars($error) ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <div class="success">
+                Registrazione completata!
+        </div>
+        <?php endif; ?>
+
         <form class="form">
-            <a href="/PepperoniManager/dashboard.php">Torna alla dashboard</a>
+            <a href="/PepperoniManager/pages/dashboard.php">Torna alla dashboard</a>
         </form>
 
         <script src="/PepperoniManager/assets/js/selector.js"></script>

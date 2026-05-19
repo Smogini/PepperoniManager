@@ -48,3 +48,24 @@ function insertReview(
 
     return $stmt->execute();
 }
+
+function getUserReviews(mysqli $conn, int $userId): array {
+    $query = "
+        SELECT
+            r.*
+
+        FROM RECENSIONE r
+        INNER JOIN ORDINE o
+        ON r.ordine_id = o.id
+
+        WHERE o.utente_id = ?
+
+        ORDER BY r.data_pubblicazione DESC
+    ";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
