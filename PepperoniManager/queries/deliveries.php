@@ -38,7 +38,7 @@ function createDelivery(
     return $stmt->execute();
 }
 
-function getAvailableDeliveries(mysqli $conn, string $created, string $waiting): array {
+function getAvailableDeliveries(mysqli $conn, string $waiting): array {
     $query = "
         SELECT 
             c.id AS consegna_id,
@@ -53,12 +53,12 @@ function getAvailableDeliveries(mysqli $conn, string $created, string $waiting):
         FROM consegna c
         JOIN ordine o ON o.id = c.ordine_id
         WHERE c.fattorino_id IS NULL
-          AND (c.stato = ? OR c.stato = ?)
+            AND c.stato = ?
         ORDER BY o.data ASC
     ";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $created, $waiting);
+    $stmt->bind_param("s", $waiting);
     $stmt->execute();
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);

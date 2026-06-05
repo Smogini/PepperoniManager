@@ -69,3 +69,16 @@ function getUserReviews(mysqli $conn, int $userId): array {
 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
+
+function changeReviewStatus(mysqli $conn, int $reviewId, string $newState): bool {
+    $query = "
+        UPDATE RECENSIONE
+        SET stato = ?
+        WHERE id = ?
+    ";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $newState, $reviewId);
+
+    return $stmt->execute();
+}

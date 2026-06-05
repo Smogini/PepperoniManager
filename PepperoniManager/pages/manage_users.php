@@ -9,7 +9,7 @@ requireAuth("AMMINISTRATORE");
 
 $conn = Database::getConnection();
 
-$utenti = gettAllUsers($conn);
+$utenti = getAllUsers($conn);
 
 $success = $_GET['success'] ?? null;
 $error = $_GET['error'] ?? null;
@@ -57,52 +57,48 @@ $error = $_GET['error'] ?? null;
                         <div class="utente-info">
                             <div class="info-box">
                                 <strong>Email</strong>
-
                                 <br>
-
                                 <?= htmlspecialchars($utente['email']) ?>
                             </div>
 
                             <div class="info-box">
                                 <strong>Registrazione</strong>
-
                                 <br>
-
                                 <?= htmlspecialchars($utente['data_registrazione']) ?>
                             </div>
                         </div>
 
                         <div class="actions">
                             <?php if($utente['stato'] === "ATTIVO"): ?>
-                                <form method="POST">
+                                <form method="POST" action="../actions/user_status.php">
                                     <input
                                         type="hidden"
-                                        name="utente_id"
-                                        value="<?= $utente['utente_id'] ?>"
+                                        name="id_persona"
+                                        value="<?= $utente['id_persona'] ?>"
                                     >
                                     <input
                                         type="hidden"
-                                        name="nuovo_stato"
+                                        name="new_state"
                                         value="BLOCCATO"
                                     >
                                     <button
                                         type="submit"
-                                        name="toggle_utente"
+                                        name="toggle_user"
                                         class="btn-danger"
                                     >
                                         Blocca account
                                     </button>
                                 </form>
                             <?php else: ?>
-                                <form method="POST">
+                                <form method="POST" action="../actions/user_status.php">
                                     <input
                                         type="hidden"
-                                        name="utente_id"
-                                        value="<?= $utente['utente_id'] ?>"
+                                        name="id_persona"
+                                        value="<?= $utente['id_persona'] ?>"
                                     >
                                     <input
                                         type="hidden"
-                                        name="nuovo_stato"
+                                        name="new_state"
                                         value="ATTIVO"
                                     >
                                     <button
@@ -120,7 +116,7 @@ $error = $_GET['error'] ?? null;
                             <summary>Ordini</summary>
 
                             <?php
-                            $ordiniUtente = getUserOrders($conn, $utente['utente_id']);
+                            $ordiniUtente = getUserOrders($conn, $utente['id_persona']);
                             ?>
 
                             <?php if(!empty($ordiniUtente)): ?>
@@ -129,17 +125,11 @@ $error = $_GET['error'] ?? null;
                                         <strong>
                                             Ordine #<?= $ordine['id'] ?>
                                         </strong>
-
                                         <br>
-
                                         <?= $ordine['data'] ?>
-
                                         <br>
-
                                         <?= $ordine['tipo_acquisizione'] ?>
-
                                         <br>
-
                                         <?= $ordine['stato'] ?>
                                     </div>
                                 <?php endforeach; ?>
@@ -156,7 +146,7 @@ $error = $_GET['error'] ?? null;
                             </summary>
 
                             <?php
-                            $recensioni = getUserReviews($conn, $utente['utente_id']);
+                            $recensioni = getUserReviews($conn, $utente['id_persona']);
                             ?>
 
                             <?php if(count($recensioni) > 0): ?>
@@ -187,7 +177,7 @@ $error = $_GET['error'] ?? null;
                                         <?php endif; ?>
                                         <div class="actions">
                                             <?php if($recensione['stato'] === "PUBBLICATA"): ?>
-                                                <form method="POST">
+                                                <form method="POST" action="../actions/review_status.php">
                                                     <input
                                                         type="hidden"
                                                         name="recensione_id"
@@ -207,7 +197,7 @@ $error = $_GET['error'] ?? null;
                                                     </button>
                                                 </form>
                                             <?php else: ?>
-                                                <form method="POST">
+                                                <form method="POST" action="../actions/review_status.php">
                                                     <input
                                                         type="hidden"
                                                         name="recensione_id"
@@ -234,22 +224,22 @@ $error = $_GET['error'] ?? null;
                                 <p>Nessuna recensione scritta.</p>
                             <?php endif; ?>
                         </details>
+
+                        <?php if ($error): ?>
+                            <div class="error">
+                                <?= $error ?>
+                            </div>
+                        <?php endif; ?>
+    
+                        <?php if ($success): ?>
+                            <div class="success">
+                                <?= $success ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
-
-        <?php if ($error): ?>
-            <div class="error">
-                <?= htmlspecialchars($error) ?>
-        </div>
-        <?php endif; ?>
-
-        <?php if ($success): ?>
-            <div class="success">
-                Registrazione completata!
-        </div>
-        <?php endif; ?>
 
         <form class="form">
             <a href="/PepperoniManager/pages/dashboard.php">Torna alla dashboard</a>

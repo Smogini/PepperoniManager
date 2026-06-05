@@ -50,7 +50,7 @@ $error = $_GET['error'] ?? null;
                                     <?= $dipendente['nome'] . " " . $dipendente['cognome']; ?>
                                     (<?= $dipendente['ruolo']; ?>)
                                 </span>
-                                <?php if ($dipendente['ruolo'] === 'fattorino'): ?>
+                                <?php if ($dipendente['ruolo'] === 'FATTORINO'): ?>
                                     <select name="veicolo_<?php echo $dipendente['id']; ?>">
                                         <option value="">-- Nessun veicolo --</option>
 

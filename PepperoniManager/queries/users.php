@@ -1,7 +1,7 @@
 <?php
 function userExists(mysqli $conn, string $username): bool {
     $query = "
-        SELECT id
+        SELECT persona_id
         FROM utente
         WHERE username = ?
     ";
@@ -38,7 +38,7 @@ function insertUser(
 
     $query = "
         INSERT INTO utente (
-            id_persona,
+            persona_id,
             email,
             username,
             password,
@@ -62,10 +62,10 @@ function insertUser(
     return $stmt->execute();
 }
 
-function gettAllUsers(mysqli $conn): array {
+function getAllUsers(mysqli $conn): array {
     return $conn->execute_query("
         SELECT
-            u.id_persona AS utente_id,
+            u.persona_id AS utente_id,
             u.*,
 
             p.nome,
@@ -73,8 +73,25 @@ function gettAllUsers(mysqli $conn): array {
 
     FROM UTENTE u
     INNER JOIN PERSONA p
-    ON u.id_persona = p.id
+    ON u.persona_id = p.id
 
     ORDER BY p.cognome, p.nome
     ")->fetch_all(MYSQLI_ASSOC);
+}
+
+function changeUserStatus(mysqli $conn, int $personaId, string $newState): bool {
+    if ($personaId < 0 || !isset($newState)) {
+        return false;
+    }
+
+    $query = "
+        UPDATE UTENTE
+        SET stato = ?
+        WHERE persona_id = ?
+    ";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("si", $newState, $personaId);
+
+    return $stmt->execute();
 }

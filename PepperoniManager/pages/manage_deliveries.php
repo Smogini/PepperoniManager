@@ -12,11 +12,7 @@ $courierId = $_SESSION['id'];
 
 $deliveryStatus = Delivery_Status::map();
 
-$available = getAvailableDeliveries(
-    $conn,
-    $deliveryStatus['CREATA'],
-    $deliveryStatus['IN_ATTESA']
-);
+$available = getAvailableDeliveries($conn, $deliveryStatus['IN_ATTESA']);
 
 $courierDeliveries = getDeliveriesByCourierId($conn, $courierId);
 

@@ -93,11 +93,13 @@ body {
 .error {
     margin-top: 15px;
     color: red;
+    text-align: center;
 }
 
 .success {
     margin-top: 15px;
     color: green;
+    text-align: center;
 }
 
 .success a {
@@ -121,7 +123,7 @@ th {
     background: #eee;
 }
 
-h2 {
+h1, h2 {
     text-align: center;
 }
 
@@ -316,4 +318,9 @@ summary {
 
 .btn-success:hover {
     background:#1e8449;
+}
+
+.highlight {
+    text-align: center;
+    color: #27ae60;
 }

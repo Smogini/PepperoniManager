@@ -1,7 +1,8 @@
 <?php
 require_once '../config/database.php';
 require_once '../config/auth.php';
-require_once '../queries/pizza.php';
+require_once '../queries/ingredients.php';
+require_once '../queries/pizzas.php';
 
 startSession();
 
@@ -27,10 +28,8 @@ try {
         $disponibilita
     );
 
-    if (insertRecipe($conn, $pizzaId, $ingredienti)) {
-        $e = "Errore nell'inserimento della ricetta";
-        header("Location: ../pages/insert_pizza.php?error=" . urlencode($e));
-        exit;
+    if (!insertRecipe($conn, $pizzaId, $ingredienti)) {
+        throw new Exception("Errore nell'inserimento della ricetta");
     }
 
     $conn->commit();

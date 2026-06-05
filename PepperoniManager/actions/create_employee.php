@@ -17,14 +17,13 @@ try {
         throw new Exception("Compila tutti i campi");
     }
 
-    // $hash = password_hash($password, PASSWORD_DEFAULT);
+    $hash = password_hash($password, PASSWORD_DEFAULT);
 
     $conn->begin_transaction();
 
     $personId = insertPerson($conn, $nome, $cognome);
 
-    // insertEmployee($conn, $personId, $ruolo, $hash);
-    if (!insertEmployee($conn, $personId, $ruolo, $password)) {
+    if (!insertEmployee($conn, $personId, $ruolo, $hash)) {
         $e = "Errore nell'inserimento del dipendente";
         header("Location: ../pages/register_employee.php?error=" . urlencode($e));
         exit;

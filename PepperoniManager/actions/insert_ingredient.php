@@ -14,10 +14,8 @@ try {
     
     $conn->begin_transaction();
 
-    if (insertIngredient($conn, $nome, $prezzo, $descrizione)) {
-        $e = "Errore nell'inserimento dell'ingrediente";
-        header("Location: ../pages/insert_ingredient.php?error=" . urlencode($e));
-        exit;
+    if (!insertIngredient($conn, $nome, $prezzo, $descrizione)) {
+        throw new Exception("Errore nell'inserimento dell'ingrediente");
     }
 
     $conn->commit();
